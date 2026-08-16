@@ -4,19 +4,415 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Treino — Luiza</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Archivo+Narrow:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-body{font-family:'IBM Plex Sans',sans-serif;background:#fff;color:#1B1E24;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
-.dot{width:56px;height:56px;border-radius:14px;background:#1A6E8A;margin-bottom:20px}
-h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:30px;text-transform:uppercase;letter-spacing:-.01em}
-p{color:#6B7386;font-size:15px;margin-top:8px;max-width:340px}
-a{display:inline-block;margin-top:24px;color:#1A6E8A;font-weight:500;text-decoration:none;border-bottom:1.5px solid #1A6E8A}
+:root{
+  --ink:#16202A;
+  --slate:#38505F;
+  --steel:#6E8794;
+  --line:#DCE6E9;
+  --paper:#FFFFFF;
+  --wash:#F3F8F8;
+  --accent:#0F7C8A;
+  --accent-deep:#0A5A66;
+  --accent-soft:#E2F1F3;
+  --ok:#2E7D4F;
+  --warn:#B4571C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;font-size:15px;-webkit-text-size-adjust:100%}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 90px}
+
+/* ---------- header ---------- */
+header{border-bottom:3px solid var(--ink);padding:26px 0 18px}
+.head-row{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.eyebrow{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,5.4vw,46px);letter-spacing:-.02em;line-height:1.02;text-transform:uppercase}
+.sub{color:var(--steel);font-size:14px;margin-top:8px;max-width:600px}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:9px 14px;border-radius:2px;cursor:pointer;transition:.15s}
+button:hover{background:var(--ink);color:#fff}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* ---------- timer ---------- */
+.timer-bar{position:sticky;top:0;z-index:40;background:var(--ink);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 20px;flex-wrap:wrap}
+.timer-inner{max-width:1120px;margin:0 auto;width:100%;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.clock{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;min-width:96px}
+.clock.over{color:#FF9C6E}
+.timer-label{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8FB3BB}
+.timer-bar button{border-color:#fff;background:transparent;color:#fff;padding:6px 12px;font-size:12px}
+.timer-bar button:hover{background:#fff;color:var(--ink)}
+
+/* ---------- filters ---------- */
+.filters{display:flex;gap:8px;flex-wrap:wrap;padding:18px 0 4px}
+.chip{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper);color:var(--slate);padding:8px 13px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:1fr 292px;gap:34px;align-items:start;margin-top:22px}
+@media(max-width:900px){.cols{grid-template-columns:1fr;gap:26px}}
+
+/* ---------- session ---------- */
+.session{border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:3px;margin-bottom:26px;overflow:hidden}
+.session-head{background:var(--wash);padding:16px 18px;border-bottom:1px solid var(--line)}
+.session-tag{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.session h2{font-family:'Archivo',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.01em;margin-top:3px}
+.session-meta{font-size:13px;color:var(--steel);margin-top:5px}
+.block-title{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);padding:15px 18px 0}
+.block-note{font-size:13px;color:var(--steel);padding:3px 18px 0;font-style:italic}
+
+/* ---------- exercise ---------- */
+.ex{padding:13px 18px 16px;border-bottom:1px solid var(--line)}
+.ex:last-child{border-bottom:none}
+.ex-name{font-family:'Archivo',sans-serif;font-weight:700;font-size:16px;line-height:1.25}
+.ex-alt{display:inline-block;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:2px;margin-left:6px;vertical-align:middle}
+.params{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 8px}
+.param{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:#fff;padding:4px 8px;border-radius:2px}
+.param.soft{background:var(--paper);color:var(--slate);border:1px solid var(--line)}
+.line{font-size:14px;color:var(--slate);margin-top:5px}
+.line b{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--steel);display:block}
+
+/* ---------- log fields ---------- */
+.log{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;background:var(--wash);padding:11px;border-radius:3px}
+.log .full{grid-column:1/-1}
+.log label{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);display:block;margin-bottom:3px}
+.log input,.log textarea{width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--ink);border:1px solid var(--line);background:var(--paper);border-radius:2px;padding:7px 9px}
+.log textarea{resize:vertical;min-height:38px}
+.log input:focus,.log textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.saved{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);opacity:0;transition:opacity .2s;grid-column:1/-1}
+.saved.on{opacity:1}
+
+/* ---------- sidebar ---------- */
+.side{position:sticky;top:60px}
+@media(max-width:900px){.side{position:static}}
+.card{border:1px solid var(--line);border-radius:3px;padding:15px 16px;margin-bottom:16px}
+.card.flag{border-left:4px solid var(--warn);background:#FDF6F1}
+.card h3{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:9px}
+.card.flag h3{color:var(--warn)}
+.week{width:100%;border-collapse:collapse;font-size:13px}
+.week td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.week td:first-child{font-family:'Archivo Narrow',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--steel);width:44px;padding-top:7px}
+.week tr:last-child td{border-bottom:none}
+.prog{list-style:none;font-size:13px;color:var(--slate)}
+.prog li{padding:7px 0 7px 14px;border-left:2px solid var(--accent-soft);margin-left:2px;position:relative}
+.prog li::before{content:"";position:absolute;left:-5px;top:13px;width:8px;height:8px;background:var(--accent);border-radius:50%}
+.prog b{display:block;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.card p{font-size:13px;color:var(--slate)}
+.card p+p{margin-top:8px}
+
+/* ---------- history ---------- */
+.hist-item{border-bottom:1px solid var(--line);padding:9px 0;font-size:13px}
+.hist-item:last-child{border-bottom:none}
+.hist-item b{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.hist-empty{font-size:13px;color:var(--steel);font-style:italic}
+.hist-del{border:none;background:none;color:var(--steel);font-size:11px;padding:2px 0;cursor:pointer;text-decoration:underline}
+.hist-del:hover{background:none;color:var(--warn)}
+
+footer{border-top:1px solid var(--line);margin-top:26px;padding-top:16px;font-size:12px;color:var(--steel)}
+
+/* ---------- print ---------- */
+@media print{
+  .timer-bar,.head-actions,.filters,.log input,.log textarea{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .timer-bar,.head-actions,.filters,.hist-del{display:none!important}
+  body{font-size:11.5px}
+  .wrap{padding:0 8px}
+  .cols{grid-template-columns:1fr;gap:14px}
+  .session{break-inside:avoid;page-break-inside:avoid;margin-bottom:14px}
+  .ex{break-inside:avoid;page-break-inside:avoid}
+  .card{break-inside:avoid}
+  .log{background:#fff;border:1px solid #ccc}
+  .session[hidden]{display:none}
+  a{text-decoration:none;color:inherit}
+}
 </style>
 </head>
 <body>
-  <div class="dot"></div>
-  <h1>Treino da Luiza</h1>
-  <p>Em preparação — a anamnese ainda está em andamento. Em breve o dashboard estará aqui.</p>
-  <a href="/">← Voltar</a>
+
+<div class="timer-bar">
+  <div class="timer-inner">
+    <span class="timer-label">Sessão</span>
+    <span class="clock" id="clock">30:00</span>
+    <button id="tStart">Iniciar</button>
+    <button id="tReset">Zerar</button>
+    <span class="timer-label" id="tHint">30 minutos. Quando acabar, acabou.</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="head-row">
+    <div>
+      <div class="eyebrow">Programa de força e condicionamento</div>
+      <h1>Treino — Luiza</h1>
+      <p class="sub">Pós-parto 4 meses · liberada sem restrições · acompanhamento com fisio pélvica. Cinco sessões de 30 minutos: 2 de força, 2 de bike, 1 de natação.</p>
+    </div>
+    <div class="head-actions">
+      <button class="primary" onclick="window.print()">Gerar PDF</button>
+      <button id="saveSession">Salvar sessão de hoje</button>
+    </div>
+  </div>
+</header>
+
+<div class="filters" id="filters">
+  <button class="chip" data-f="all" aria-pressed="true">Tudo</button>
+  <button class="chip" data-f="forcaA" aria-pressed="false">Força A</button>
+  <button class="chip" data-f="forcaB" aria-pressed="false">Força B</button>
+  <button class="chip" data-f="bike1" aria-pressed="false">Bike intervalado</button>
+  <button class="chip" data-f="bike2" aria-pressed="false">Bike contínuo</button>
+  <button class="chip" data-f="natacao" aria-pressed="false">Natação</button>
+</div>
+
+<div class="cols">
+  <main id="sessions"></main>
+
+  <aside class="side">
+    <div class="card">
+      <h3>Semana modelo</h3>
+      <table class="week">
+        <tr><td>Seg</td><td>Força A</td></tr>
+        <tr><td>Ter</td><td>Bike intervalado</td></tr>
+        <tr><td>Qua</td><td>Descanso ou caminhada</td></tr>
+        <tr><td>Qui</td><td>Força B</td></tr>
+        <tr><td>Sex</td><td>Natação</td></tr>
+        <tr><td>Sáb</td><td>Bike contínuo</td></tr>
+      </table>
+      <p style="margin-top:10px"><b>A força vem primeiro.</b> Se a semana render só duas sessões, que sejam A e B. Bike e natação são o que sobra, não o que substitui.</p>
+    </div>
+
+    <div class="card flag">
+      <h3>Ajustes das primeiras semanas</h3>
+      <p><b>Glúteo direito.</b> Enquanto estiver sensível, use leg press ou afundo apoiado no lugar do búlgaro no Treino B.</p>
+      <p><b>Semanas 1 e 2.</b> Faça 2 rodadas em vez de 3 nos blocos principais. Você está retomando, não recuperando tempo perdido.</p>
+      <p><b>Sinal de alerta.</b> Dor que piora progressivamente, irradia com formigamento ou passa de 7 a 10 dias: leve para a fisio.</p>
+    </div>
+
+    <div class="card">
+      <h3>Progressão</h3>
+      <ul class="prog">
+        <li><b>Semanas 1-2</b>Carga leve, foco em técnica. Termine cada série sentindo que dava mais 3 ou 4 repetições.</li>
+        <li><b>Semanas 3-4</b>Sobe a carga mantendo as repetições. Reserva de 2 repetições.</li>
+        <li><b>Semanas 5-6</b>Sobe a carga ou acrescenta 1 rodada no bloco principal.</li>
+        <li><b>Semana 7</b>Semana leve, metade das séries. Momento de reavaliar e conversar com a fisio sobre o retorno à corrida.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Dia ruim</h3>
+      <p>Bebê acordado, noite curta, pressa: faça só o Bloco 1 e vá embora. Doze minutos contam e mantêm a rotina viva.</p>
+    </div>
+
+    <div class="card">
+      <h3>Sessões registradas</h3>
+      <div id="hist"></div>
+    </div>
+  </aside>
+</div>
+
+<footer>Os registros ficam salvos neste navegador. Para levar o histórico para outro aparelho, gere o PDF.</footer>
+</div>
+
+<script>
+const PROGRAM = [
+  {
+    id:"forcaA", tag:"Força · 30 min", title:"Treino A", meta:"Pares alternados — enquanto um lado descansa, o outro trabalha.",
+    blocks:[
+      {name:"Ativação — 4 min", note:"Igual nos dois treinos de força.", exs:[
+        {n:"Respiração 360° + conexão de core", p:["8 respirações"], exec:"Expira soltando o ar e abraçando a barriga por dentro, sem forçar.", obj:"Ativa transverso e assoalho pélvico sem crunch.", log:false},
+        {n:"Gato-camelo + rotação torácica", p:["8 de cada"], exec:"Alterna arredondar e estender a coluna; depois abre o braço para o teto.", obj:"Solta a torácica travada de amamentar.", log:false},
+        {n:"Ponte de glúteo", p:["12 reps"], exec:"Empurra o chão com os calcanhares, 1s de pausa em cima.", obj:"Acorda o glúteo antes de carregar peso.", log:false}
+      ]},
+      {name:"Bloco 1 — 3 rodadas", note:"Pernas e costas: o par que mais rende por minuto.", exs:[
+        {n:"Agachamento goblet", p:["3 × 8-10","Desce 3s / sobe rápido","Sem descanso — vai ao par"], exec:"Halter ou kettlebell no peito, cotovelos apontando para baixo. Desce controlado, sobe firme.", obj:"Força de pernas com tronco ereto e pouca demanda técnica."},
+        {n:"Remada serrote com halter", p:["3 × 10 cada lado","Descanso 60s"], exec:"Apoiada no banco, puxa o cotovelo para trás rente ao corpo. Ombro longe da orelha.", obj:"Costas e postura — o contrapeso de carregar bebê."}
+      ]},
+      {name:"Bloco 2 — 3 rodadas", exs:[
+        {n:"RDL com halteres", p:["3 × 10","Sem descanso — vai ao par"], exec:"Joelhos semiflexionados, quadril para trás, desce até sentir o posterior alongar. Coluna neutra.", obj:"Posterior de coxa e glúteo, a base do retorno à corrida."},
+        {n:"Desenvolvimento de ombros sentada", p:["3 × 8-10","Descanso 60s"], exec:"Halteres na altura das orelhas, sobe sem encolher o trapézio.", obj:"Força de ombro para levantar e carregar o bebê sem sobrecarregar o pescoço."}
+      ]},
+      {name:"Bloco 3 — Finalizador (4 min)", exs:[
+        {n:"Pallof press", p:["2 × 10 cada lado","Descanso 30s"], exec:"Polia ou elástico na lateral do corpo, empurra as mãos à frente resistindo à rotação.", obj:"Core anti-rotação, sem abdominal no chão."},
+        {n:"Farmer's walk", p:["2 × 30 passadas"], exec:"Halter pesado em cada mão, postura ereta, ombros longe da orelha.", obj:"Pegada, tronco e condicionamento em um exercício só."}
+      ]}
+    ]
+  },
+  {
+    id:"forcaB", tag:"Força · 30 min", title:"Treino B", meta:"Mesma lógica de pares alternados.",
+    blocks:[
+      {name:"Ativação — 4 min", note:"Repete a do Treino A.", exs:[
+        {n:"Respiração 360° · Gato-camelo · Ponte de glúteo", p:["4 min"], exec:"Mesma sequência do Treino A.", obj:"Preparar quadril, core e torácica.", log:false}
+      ]},
+      {name:"Bloco 1 — 3 rodadas", note:"Enquanto o glúteo direito estiver sensível, use leg press ou afundo apoiado.", exs:[
+        {n:"Afundo apoiado ou búlgaro", alt:"Leg press", p:["3 × 8-10 cada perna","Sem descanso — vai ao par"], exec:"Pé de trás apoiado no banco, desce vertical. No leg press, pés na largura do quadril, sem travar o joelho.", obj:"Força unilateral de perna — o que mais transfere para correr."},
+        {n:"Puxada alta (pulldown)", p:["3 × 10","Descanso 60s"], exec:"Puxa conduzindo os cotovelos para baixo, peito aberto, sem jogar o tronco para trás.", obj:"Dorsais e postura."}
+      ]},
+      {name:"Bloco 2 — 3 rodadas", exs:[
+        {n:"Elevação de quadril (hip thrust)", p:["3 × 12","1s de pausa em cima","Sem descanso — vai ao par"], exec:"Costas apoiadas no banco, trava as costelas para baixo e sobe pelo glúteo, não pela lombar.", obj:"Glúteo, o motor que protege lombar e joelho."},
+        {n:"Supino reto com halteres", p:["3 × 10","Descanso 60s"], exec:"Desce até os cotovelos na linha do tronco, sobe sem bater os halteres.", obj:"Peitoral e ombro, empurrar com segurança."}
+      ]},
+      {name:"Bloco 3 — Finalizador (4 min)", exs:[
+        {n:"Crucifixo inverso na máquina", p:["2 × 15"], exec:"Abre os braços puxando com os cotovelos, sem encolher o ombro. Sem máquina: com halteres, sentada e tronco inclinado à frente.", obj:"Deltoide posterior e rombóides — o antídoto dos ombros enrolados."},
+        {n:"Suitcase carry", alt:"Escolha 1 das 2", p:["2 × 20 passadas cada lado"], exec:"Halter pesado em uma mão só. Tronco ereto, ombros nivelados, sem cair para o lado do peso.", obj:"Core anti-inclinação, em pé e com carga."},
+        {n:"Bird-dog em pé na polia", alt:"Escolha 1 das 2", p:["2 × 10 cada lado"], exec:"Em pé, uma mão puxa o cabo à frente enquanto o tronco resiste à rotação.", obj:"Mesmo objetivo, sem carga na mão — para dias de punho ou ombro cansados."}
+      ]}
+    ]
+  },
+  {
+    id:"bike1", tag:"Bike · 30 min", title:"Bike — Intervalado", meta:"Controle por esforço percebido (RPE 1-10) e nível de resistência.",
+    blocks:[
+      {name:"Sessão", exs:[
+        {n:"Aquecimento", p:["6 min","RPE 3-4"], exec:"Resistência baixa, pernas girando soltas.", obj:"Subir a frequência cardíaca sem esforço."},
+        {n:"Série principal", p:["8 × (1 min forte + 1 min leve)","16 min"], exec:"Forte: resistência média-alta, RPE 7-8 — dá para falar 3 ou 4 palavras, não mais. Leve: resistência baixa, RPE 3.", obj:"Condicionamento em pouco tempo."},
+        {n:"Volta à calma", p:["8 min","RPE 3"], exec:"Resistência baixa até a respiração normalizar.", obj:"Recuperação."},
+        {n:"Progressão", p:["Semana 3","Semana 5"], exec:"Semana 3: 10 rodadas, cortando 4 min da volta à calma. Semana 5: aumenta a resistência do bloco forte mantendo 8 rodadas.", obj:"Avanço sem alongar a sessão.", log:false}
+      ]}
+    ]
+  },
+  {
+    id:"bike2", tag:"Bike · 30 min", title:"Bike — Contínuo", meta:"A sessão que constrói a base aeróbia do retorno à corrida.",
+    blocks:[
+      {name:"Sessão", exs:[
+        {n:"Aquecimento", p:["5 min","RPE 3"], exec:"Resistência baixa.", obj:"Preparar as pernas."},
+        {n:"Bloco contínuo", p:["20 min","RPE 5-6"], exec:"Resistência média, ritmo em que você conseguiria conversar em frases curtas. Constante, sem picos.", obj:"Base aeróbia."},
+        {n:"Volta à calma", p:["5 min","RPE 2-3"], exec:"Resistência mínima.", obj:"Recuperação."},
+        {n:"Progressão", p:["+5 min a cada 2 semanas"], exec:"Aumenta o bloco contínuo até 30 min.", obj:"Volume aeróbio crescente.", log:false}
+      ]}
+    ]
+  },
+  {
+    id:"natacao", tag:"Natação · 30 min", title:"Natação — ~850m", meta:"Sem virada olímpica: saída de borda e descanso no relógio da parede.",
+    blocks:[
+      {name:"Sessão", exs:[
+        {n:"Aquecimento", p:["200m crawl leve"], exec:"Respiração tranquila, braçada longa.", obj:"Soltar ombros e torácica."},
+        {n:"Técnica", p:["4 × 50m","Descanso 20s"], exec:"25m só pernada com prancha + 25m crawl completo.", obj:"Melhorar a propulsão de perna."},
+        {n:"Costas", p:["4 × 25m","Descanso 20s"], exec:"Nado de costas em dose pequena, sem pressa.", obj:"Trabalhar o nado fraco e abrir a postura de amamentação."},
+        {n:"Principal", p:["6 × 50m crawl","RPE 7","Descanso 30s"], exec:"Ritmo forte e sustentável nos 6 tiros.", obj:"Condicionamento."},
+        {n:"Solto", p:["100m peito"], exec:"Nado confortável, tranquilo.", obj:"Volta à calma."},
+        {n:"Progressão", p:["Semana 3","Semana 5"], exec:"Semana 3: principal vira 8 × 50m. Semana 5: 4 × 100m com 40s de descanso.", obj:"Aumentar volume mantendo os 30 min.", log:false}
+      ]}
+    ]
+  }
+];
+
+const LS_DATA = "luiza_treino_v1";
+const LS_HIST = "luiza_treino_hist_v1";
+let state = JSON.parse(localStorage.getItem(LS_DATA) || "{}");
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const slug = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").slice(0,40);
+
+function render(){
+  document.getElementById("sessions").innerHTML = PROGRAM.map(s => `
+    <section class="session" data-s="${s.id}">
+      <div class="session-head">
+        <div class="session-tag">${esc(s.tag)}</div>
+        <h2>${esc(s.title)}</h2>
+        <div class="session-meta">${esc(s.meta)}</div>
+      </div>
+      ${s.blocks.map(b => `
+        <div class="block-title">${esc(b.name)}</div>
+        ${b.note ? `<div class="block-note">${esc(b.note)}</div>` : ""}
+        ${b.exs.map(e => {
+          const key = s.id + "__" + slug(e.n);
+          const v = state[key] || {};
+          return `<div class="ex">
+            <div class="ex-name">${esc(e.n)}${e.alt ? `<span class="ex-alt">${esc(e.alt)}</span>` : ""}</div>
+            <div class="params">${e.p.map((p,i) => `<span class="param${i?" soft":""}">${esc(p)}</span>`).join("")}</div>
+            <div class="line"><b>Execução</b>${esc(e.exec)}</div>
+            <div class="line"><b>Objetivo</b>${esc(e.obj)}</div>
+            ${e.log === false ? "" : `
+            <div class="log" data-key="${key}">
+              <div><label for="${key}-c">Carga</label><input id="${key}-c" data-f="carga" value="${esc(v.carga||"")}" placeholder="kg / nível"></div>
+              <div><label for="${key}-r">Séries × reps feitas</label><input id="${key}-r" data-f="reps" value="${esc(v.reps||"")}" placeholder="ex: 3 × 10"></div>
+              <div class="full"><label for="${key}-o">Observações</label><textarea id="${key}-o" data-f="obs" placeholder="como se sentiu, ajustes, dor">${esc(v.obs||"")}</textarea></div>
+              <span class="saved">Salvo ✓</span>
+            </div>`}
+          </div>`;
+        }).join("")}
+      `).join("")}
+    </section>`).join("");
+}
+
+// autosave
+document.addEventListener("input", e => {
+  const box = e.target.closest(".log");
+  if(!box) return;
+  const key = box.dataset.key;
+  state[key] = state[key] || {};
+  state[key][e.target.dataset.f] = e.target.value;
+  state[key].data = new Date().toISOString().slice(0,10);
+  localStorage.setItem(LS_DATA, JSON.stringify(state));
+  const tag = box.querySelector(".saved");
+  tag.classList.add("on");
+  clearTimeout(tag._t);
+  tag._t = setTimeout(() => tag.classList.remove("on"), 1200);
+});
+
+// filters
+document.getElementById("filters").addEventListener("click", e => {
+  const chip = e.target.closest(".chip");
+  if(!chip) return;
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === chip));
+  const f = chip.dataset.f;
+  document.querySelectorAll(".session").forEach(s => {
+    s.hidden = !(f === "all" || s.dataset.s === f);
+  });
+});
+
+// timer
+let left = 1800, tick = null;
+const clock = document.getElementById("clock");
+const btn = document.getElementById("tStart");
+function paint(){
+  const m = Math.floor(Math.abs(left)/60), s = Math.abs(left)%60;
+  clock.textContent = (left<0?"-":"") + m + ":" + String(s).padStart(2,"0");
+  clock.classList.toggle("over", left <= 0);
+}
+btn.addEventListener("click", () => {
+  if(tick){ clearInterval(tick); tick = null; btn.textContent = "Continuar"; return; }
+  btn.textContent = "Pausar";
+  tick = setInterval(() => { left--; paint(); }, 1000);
+});
+document.getElementById("tReset").addEventListener("click", () => {
+  clearInterval(tick); tick = null; left = 1800; btn.textContent = "Iniciar"; paint();
+});
+paint();
+
+// history
+function hist(){ return JSON.parse(localStorage.getItem(LS_HIST) || "[]"); }
+function renderHist(){
+  const h = hist();
+  document.getElementById("hist").innerHTML = h.length ? h.map((x,i) => `
+    <div class="hist-item">
+      <b>${esc(x.data)}</b> · ${esc(x.resumo)}
+      <br><button class="hist-del" data-i="${i}">apagar</button>
+    </div>`).join("") : `<p class="hist-empty">Nenhuma sessão registrada ainda.</p>`;
+}
+document.getElementById("hist").addEventListener("click", e => {
+  if(!e.target.matches(".hist-del")) return;
+  const h = hist(); h.splice(+e.target.dataset.i, 1);
+  localStorage.setItem(LS_HIST, JSON.stringify(h)); renderHist();
+});
+document.getElementById("saveSession").addEventListener("click", () => {
+  const today = new Date().toISOString().slice(0,10);
+  const n = Object.values(state).filter(v => v.data === today && (v.carga || v.reps || v.obs)).length;
+  if(!n){ alert("Preencha ao menos um exercício antes de salvar a sessão."); return; }
+  const h = hist();
+  h.unshift({
+    data: new Date().toLocaleDateString("pt-BR"),
+    resumo: n + (n === 1 ? " exercício registrado" : " exercícios registrados"),
+    snapshot: JSON.parse(JSON.stringify(state))
+  });
+  localStorage.setItem(LS_HIST, JSON.stringify(h.slice(0,30)));
+  renderHist();
+});
+
+render();
+renderHist();
+</script>
 </body>
 </html>
