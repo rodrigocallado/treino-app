@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treino de Pernas — Rodrigo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Archivo+Narrow:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B1E24; --slate:#3C4351; --steel:#6B7386;
+  --line:#E3E0D9; --paper:#FFFFFF; --wash:#F7F5F1;
+  --accent:#C2451A; --accent-soft:#FBEDE6; --ok:#2E7D4F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;font-size:15px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+header{border-bottom:3px solid var(--ink);padding:28px 0 20px;margin-bottom:8px}
+.head-row{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.eyebrow{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(28px,5vw,44px);letter-spacing:-.02em;line-height:1.02;text-transform:uppercase}
+.sub{color:var(--steel);font-size:14px;margin-top:6px;max-width:560px}
+.head-actions{display:flex;gap:10px;flex-wrap:wrap}
+button{font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:none;border-radius:4px;padding:12px 18px;transition:transform .08s ease,opacity .15s}
+button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-ghost{background:var(--wash);color:var(--ink);border:1.5px solid var(--line)}
+.btn-sm{padding:7px 12px;font-size:11px}
+
+/* pain banner */
+.pain-banner{display:none;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:8px;padding:16px;margin:18px 0}
+.pain-banner.show{display:block}
+.pain-q{font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;margin-bottom:10px}
+.pain-scale{display:flex;gap:6px;flex-wrap:wrap}
+.pain-scale button{width:40px;height:40px;padding:0;border-radius:6px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:14px}
+.pain-scale button:hover{border-color:var(--accent)}
+.pain-hint{font-size:11.5px;color:var(--steel);margin-top:8px}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--line);border:1.5px solid var(--line);margin:20px 0 36px}
+.meta div{background:var(--paper);padding:14px 16px}
+.meta .k{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.meta .v{font-family:'Archivo',sans-serif;font-weight:700;font-size:17px;margin-top:2px}
+.meta .v small{font-weight:500;font-size:12px;color:var(--steel)}
+
+.grid{display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:start}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+
+.block{margin-bottom:40px}
+.block-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:4px;flex-wrap:wrap}
+.block-letter{font-family:'Archivo',sans-serif;font-weight:800;font-size:34px;color:var(--accent);line-height:1}
+.block-title{font-family:'Archivo',sans-serif;font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.02em}
+.block-time{margin-left:auto;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:13px;background:var(--ink);color:#fff;padding:4px 10px;border-radius:3px}
+.block-note{font-size:13px;color:var(--steel);margin:6px 0 18px}
+
+.ex{border:1.5px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;margin-bottom:18px;overflow:hidden;background:var(--paper)}
+.ex-head{display:flex;align-items:center;gap:10px;padding:13px 16px 10px;flex-wrap:wrap}
+.ex-num{font-family:'Archivo',sans-serif;font-weight:800;color:var(--accent);font-size:15px}
+.ex-name{font-family:'Archivo',sans-serif;font-weight:700;font-size:16px}
+.ex-tag{margin-left:auto;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;background:var(--slate);color:#fff;padding:3px 9px;border-radius:3px}
+.ex-params{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ex-params div{background:var(--wash);padding:9px 14px}
+.ex-params .k{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.ex-params .v{font-weight:600;font-size:13.5px;margin-top:1px}
+.ex-body{padding:13px 16px 15px;font-size:13.5px;color:var(--slate)}
+.ex-body p{margin-bottom:7px}
+.ex-body b.lbl{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.ex-body b.lbl.gray{color:var(--steel)}
+.warn{background:var(--accent-soft);border-radius:4px;padding:8px 12px;font-size:12.5px;color:#8A3212;margin-top:4px}
+
+.log{background:var(--wash);border-top:1.5px dashed var(--line);padding:12px 16px 14px}
+.log-title{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.log-title::before{content:"";width:8px;height:8px;background:var(--accent);border-radius:2px;display:inline-block}
+.log-fields{display:grid;grid-template-columns:110px 110px 1fr;gap:10px}
+@media(max-width:560px){.log-fields{grid-template-columns:1fr 1fr}.log-fields .obs{grid-column:1/-1}}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--steel);margin-bottom:3px}
+.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--line);border-radius:4px;padding:8px 10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;background:#fff;color:var(--ink)}
+.field textarea{resize:vertical;min-height:38px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent)}
+
+.side{position:sticky;top:20px}
+.side-card{border:1.5px solid var(--line);border-radius:6px;padding:18px;margin-bottom:18px;background:var(--paper)}
+.side-card.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.countdown{font-family:'Archivo',sans-serif;font-weight:800;font-size:44px;line-height:1;color:var(--accent)}
+.countdown-lbl{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#C9CDD6;margin-top:4px}
+.side-h{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;color:var(--ink)}
+.side-card.dark .side-h{color:#fff}
+.mile{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.mile:first-of-type{border-top:none}
+.mile .date{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:var(--accent);white-space:nowrap;min-width:52px}
+.rule{font-size:12.5px;color:#D8DBE1;padding:7px 0;border-top:1px solid #3A404C}
+.rule:first-of-type{border-top:none}
+.rule b{color:#fff}
+
+.hist{border:1.5px solid var(--line);border-radius:6px;padding:18px;margin-top:8px}
+.hist-item{font-size:13px;padding:10px 0;border-top:1px solid var(--line)}
+.hist-item:first-of-type{border-top:none}
+.hist-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hist-empty{font-size:13px;color:var(--steel);font-style:italic}
+.hist-date{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:var(--accent);white-space:nowrap}
+.hist-meta{color:var(--steel);font-size:12px}
+.hist-pain{font-size:11px;background:var(--wash);border:1px solid var(--line);border-radius:3px;padding:1px 6px}
+.hist-actions{margin-left:auto;display:flex;gap:4px}
+.hist-actions button{background:none;border:1px solid var(--line);color:var(--steel);font-size:11px;padding:3px 8px;border-radius:3px;text-transform:none;font-family:'IBM Plex Sans',sans-serif;font-weight:500}
+.hist-actions button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(27,30,36,.55);display:none;align-items:flex-start;justify-content:center;padding:20px;z-index:50;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:10px;max-width:440px;width:100%;padding:24px;border-top:5px solid var(--accent);margin:auto}
+.modal.wide{max-width:760px}
+.modal h2{font-family:'Archivo',sans-serif;font-weight:800;font-size:20px;text-transform:uppercase;margin-bottom:4px}
+.modal .msub{font-size:13px;color:var(--steel);margin-bottom:18px}
+.modal .field{margin-bottom:14px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+
+/* report */
+.rep-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.rep-controls button{padding:8px 14px;font-size:12px}
+.rep-controls button.active{background:var(--ink);color:#fff}
+.rep-sec{margin-bottom:20px}
+.rep-h{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border-bottom:1.5px solid var(--line);padding-bottom:4px;margin-bottom:8px}
+.rep-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:6px}
+.rep-kpi{background:var(--wash);border-radius:6px;padding:10px 12px}
+.rep-kpi .k{font-size:10.5px;font-weight:600;color:var(--steel);text-transform:uppercase;letter-spacing:.08em}
+.rep-kpi .v{font-family:'Archivo',sans-serif;font-weight:800;font-size:20px}
+.rep-ex{padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.rep-ex:first-of-type{border-top:none}
+.rep-ex-name{font-weight:600}
+.rep-ex-data{color:var(--slate);font-size:12.5px;margin-top:2px}
+.rep-ex svg{display:block;margin-top:4px}
+.copied{font-size:12px;color:var(--ok);font-weight:600;display:none}
+.copied.show{display:inline}
+
+@media print{
+  @page{margin:12mm}
+  body{font-size:11px}
+  .head-actions,.hist-actions,.pain-banner,.overlay{display:none!important}
+  .side{position:static}
+  .grid{grid-template-columns:1fr}
+  .side-card.dark{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .countdown-lbl{color:var(--steel)}
+  .rule{color:var(--slate)}.rule b{color:var(--ink)}
+  .ex{break-inside:avoid;page-break-inside:avoid}
+  .field input,.field textarea{border:1px solid #bbb}
+  header{padding-top:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="head-row">
+    <div>
+      <div class="eyebrow">Reabilitação semimembranoso + força · CIM 06/12/2026</div>
+      <h1>Treino de Pernas</h1>
+      <div class="sub">Fase de remodelação tendínea · protocolo HSR no posterior · força geral para maratona net downhill</div>
+    </div>
+    <div class="head-actions">
+      <button class="btn-ghost" id="btnReport">Relatório</button>
+      <button class="btn-ghost" onclick="window.print()">Gerar PDF</button>
+      <button class="btn-primary" id="btnDone">Treino concluído</button>
+    </div>
+  </div>
+
+  <div class="pain-banner" id="painBanner">
+    <div class="pain-q" id="painQ">Como está o posterior desde o último treino?</div>
+    <div class="pain-scale" id="painScale"></div>
+    <div class="pain-hint">0 = sem dor · 10 = pior dor. A nota fica anexada à sessão correspondente.</div>
+  </div>
+
+  <div class="meta">
+    <div><div class="k">Duração total</div><div class="v">~45 min</div></div>
+    <div><div class="k">Frequência</div><div class="v">1–2x/sem <small>48h antes de corrida intensa</small></div></div>
+    <div><div class="k">Regra de dor</div><div class="v">≤3/10 <small>· basal em 24h</small></div></div>
+    <div><div class="k">Exercício sentinela</div><div class="v">Deadlift uni.</div></div>
+  </div>
+</header>
+
+<div class="grid">
+<main id="blocks"></main>
+
+<aside class="side">
+  <div class="side-card dark">
+    <div class="countdown" id="cd">—</div>
+    <div class="countdown-lbl">dias até o CIM · 06 dez 2026</div>
+  </div>
+  <div class="side-card">
+    <div class="side-h">Progressões planejadas</div>
+    <div class="mile"><span class="date">~06/09</span><span>Adutora sai → <b>Copenhagen curto</b> 2×6–8/lado. Downhill entra na corrida (alinhar c/ Danilo).</span></div>
+    <div class="mile"><span class="date">12→3 sem</span><span>4–6 sessões de descida antes do taper. Passada curta + cadência alta em declive.</span></div>
+    <div class="mile"><span class="date">−2 sem</span><span>Manter força até aqui, depois reduzir para o taper.</span></div>
+    <div class="mile"><span class="date">Futuro</span><span>Walking lunge substitui agachamento Smith · Nordic só com tendão assintomático.</span></div>
+  </div>
+  <div class="side-card dark">
+    <div class="side-h">Regras transversais</div>
+    <div class="rule"><b>Dor:</b> ≤3–4/10 durante · retorno ao basal em 24h. Pior no dia seguinte → −10–20% no deadlift/leg curl.</div>
+    <div class="rule"><b>Unilaterais:</b> esquerda → direita → 60–90seg de pausa real → repete.</div>
+    <div class="rule"><b>Ordem:</b> deadlift antes da flexora — composto sem fadiga.</div>
+  </div>
+  <div class="hist">
+    <div class="side-h" style="display:flex;align-items:center;gap:8px">Sessões <button class="btn-ghost btn-sm" id="btnBackup" style="margin-left:auto">Backup</button></div>
+    <div id="histList"><div class="hist-empty">Nenhuma sessão registrada ainda.</div></div>
+  </div>
+</aside>
+</div>
+</div>
+
+<!-- MODAL: concluir/editar sessão -->
+<div class="overlay" id="ovDone">
+  <div class="modal">
+    <h2 id="doneTitle">Treino concluído</h2>
+    <div class="msub" id="doneSub">Registra a sessão com os dados preenchidos nos exercícios.</div>
+    <div class="field">
+      <label>Duração do treino</label>
+      <select id="mDur">
+        <option value="">Selecione…</option>
+        <option>Até 30 min</option><option>30–45 min</option><option>45–60 min</option>
+        <option>60–75 min</option><option>Mais de 75 min</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Intensidade percebida</label>
+      <select id="mInt">
+        <option value="">Selecione…</option>
+        <option>1 — Leve</option><option>2 — Moderado</option><option>3 — Desafiador</option>
+        <option>4 — Intenso</option><option>5 — Muito intenso</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Observações da sessão (opcional)</label>
+      <textarea id="mObs" rows="2" placeholder="dor no posterior? energia? sono?" style="width:100%;border:1.5px solid var(--line);border-radius:4px;padding:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="mCancel">Cancelar</button>
+      <button class="btn-primary" id="mSave">Registrar sessão</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: relatório -->
+<div class="overlay" id="ovRep">
+  <div class="modal wide">
+    <h2>Relatório de evolução</h2>
+    <div class="msub">Baseado nas sessões registradas neste dispositivo.</div>
+    <div class="rep-controls">
+      <button class="btn-ghost" data-w="4">4 semanas</button>
+      <button class="btn-ghost" data-w="8">8 semanas</button>
+      <button class="btn-ghost active" data-w="12">12 semanas</button>
+      <button class="btn-ghost" data-w="0">Tudo</button>
+    </div>
+    <div id="repBody"></div>
+    <div class="modal-actions">
+      <span class="copied" id="copiedFlag">Copiado ✓</span>
+      <button class="btn-ghost" id="repCopy">Copiar para o Claude</button>
+      <button class="btn-ghost" onclick="window.print()">Imprimir</button>
+      <button class="btn-primary" id="repClose">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= prescrição =================
+const EXERCISES = [
+ {block:"A", letter:"A", title:"Ativação / Aquecimento", time:"~10 min",
+  note:"3 super-séries · sem descanso dentro do par · 30seg entre pares · 3 passadas no circuito A1→A2→A3",
+  items:[
+   {id:"a1a",num:"A1a",name:"Ponte isométrica unilateral",tag:"Glúteo / Pelve",track:false,
+    params:[["Séries","3 (circuito)"],["Tempo","30seg/lado"],["Carga","Corporal"],["Execução","Isometria"]],
+    exec:"Um pé no chão, outra perna elevada. Suba o quadril até alinhar ombro-quadril-joelho e sustente 30seg sem deixar a pelve cair. Glúteo contraído, costelas fechadas.",
+    obj:"Ativar glúteo máximo e estabilidade pélvica; simetria entre os lados.",
+    rest:"Sem descanso — direto para A1b."},
+   {id:"a1b",num:"A1b",name:"Hip thrust unilateral com carga (calcanhar na caixa)",tag:"Glúteo / Força",track:true,
+    params:[["Séries","3"],["Reps","10/lado"],["Carga base","Anilha 10kg"],["Execução","2s sobe · 1s topo · 2s desce"]],
+    exec:"Calcanhar na caixa (altura do joelho), anilha sobre o quadril. Suba pelo calcanhar até extensão completa, contraia 1seg no topo, desça controlado. Sem hiperextender a lombar.",
+    obj:"Força de glúteo máximo em posição encurtada — extensão de quadril na corrida com estresse mínimo no semimembranoso.",
+    rest:"30seg após o par A1 · segue para A2.",
+    warn:"Progressão de carga acontece aqui: 3×10 fácil → +2,5–5kg."},
+   {id:"a2a",num:"A2a",name:"Abdução de quadril em pé com band",tag:"Glúteo médio",track:false,
+    params:[["Séries","3 (circuito)"],["Reps","15/lado"],["Carga","Mini band tornozelos"],["Execução","1s abre · 2s volta"]],
+    exec:"Band nos tornozelos. Abra a perna lateralmente sem inclinar o tronco nem rodar o pé pra fora; volte resistindo à banda.",
+    obj:"Glúteo médio — estabilizador da pelve no apoio unipodal da corrida.",
+    rest:"Sem descanso — direto para A2b."},
+   {id:"a2b",num:"A2b",name:"Prancha com um pé (band nos tornozelos)",tag:"Core / Antirrotação",track:false,
+    params:[["Séries","3"],["Tempo","Troca a cada 10seg · 3x"],["Carga","Band tornozelos"],["Execução","Isometria"]],
+    exec:"Prancha com band nos tornozelos. Eleve um pé mantendo leve tensão; a pelve não pode rodar nem cair. Troque a cada 10seg, 3 trocas.",
+    obj:"Estabilidade de tronco/pelve sob assimetria — fase de apoio da corrida.",
+    rest:"30seg após o par A2 · segue para A3."},
+   {id:"a3a",num:"A3a",name:"Abdução em decúbito lateral (star), cotovelo no chão",tag:"Quadril lateral",track:false,
+    params:[["Séries","3 (circuito)"],["Reps","12/lado"],["Carga","Corporal"],["Execução","1s sobe · 2s desce"]],
+    exec:"De lado, apoiado no cotovelo, corpo alinhado. Eleve a perna de cima estendida, calcanhar guiando, sem rolar o quadril para trás.",
+    obj:"Glúteo médio/mínimo em cadeia lateral — outro vetor de abdução.",
+    rest:"Sem descanso — direto para A3b."},
+   {id:"a3b",num:"A3b",name:"Deadbug com band nos tornozelos + elástico nas mãos",tag:"Core antiextensão",track:false,
+    params:[["Séries","3"],["Reps","10/lado"],["Carga","Band + elástico"],["Execução","Lento · 2–3s"]],
+    exec:"Lombar pressionada no chão. Estenda braço e perna opostos sem descolar a lombar; volte e alterne.",
+    obj:"Controle lombopélvico sob tensão cruzada — postura nas milhas finais.",
+    rest:"30seg · reinicia o circuito ou encerra na 3ª passada."}
+  ]},
+ {block:"B", letter:"B", title:"Força posterior — Reabilitação", time:"~15 min",
+  note:"Protocolo HSR (heavy slow resistance) · execução lenta · exercício sentinela: deadlift unilateral",
+  items:[
+   {id:"b1",num:"B1",name:"Deadlift unilateral (RDL)",tag:"Semimembranoso",track:true,
+    params:[["Séries × Reps","12/10/8/8"],["Carga base","20/25/30/30 kg"],["Execução","3s desce · 1s pausa · 2s sobe"],["RPE","7–8"]],
+    exec:"Quadril como dobradiça: desça em 3seg com coluna neutra até o alongamento no posterior. Pausa 1seg no fundo SEM relaxar, suba em 2seg. Sem quicar.",
+    obj:"Exercício central da reabilitação: carga em posição alongada — melhor evidência para remodelação tendínea. Constrói o hinge da corrida.",
+    rest:"Alterna pernas; após as duas, 60–90seg de pausa real (~2–3min/perna).",
+    warn:"SENTINELA — monitorar dor 24h pós-treino. Progressão: 4×8 com 30kg confortável → +2,5kg."},
+   {id:"b2",num:"B2",name:"Standing leg curl unilateral",tag:"Isquiotibiais",track:true,
+    params:[["Séries × Reps","3 × 8–10/perna"],["Carga base","5 kg"],["Execução","3s flexiona · 1s pico · 3s volta"],["RPE","7–8"]],
+    exec:"Tronco estável, sem inclinar pra ajudar. Flexione em 3seg, segure 1–2seg, retorne em 3seg. Evite flexão terminal completa se puxar na inserção.",
+    obj:"Isolamento com quadril neutro — flexão de joelho com mínima compressão na inserção.",
+    rest:"Alterna pernas + 60seg entre séries.",
+    warn:"Repetir 5kg na próxima semana antes de progredir."}
+  ]},
+ {block:"C", letter:"C", title:"Força geral — Super-séries", time:"~20 min",
+  note:"C1 no Smith · C2 usa UMA máquina por vez, pareada com exercício de peso corporal ao lado",
+  items:[
+   {id:"c1a",num:"C1a",name:"Agachamento guiado (Smith)",tag:"Quadríceps / Glúteo",track:true,
+    params:[["Séries × Reps","3 × 6–10"],["Carga base","25/30/30 kg"],["Execução","2s desce · sobe forte"],["RPE","7–8"]],
+    exec:"Pés à frente da barra, tíbia próxima da vertical. Desça em 2seg até profundidade confortável, suba com força — concêntrica pode ser explosiva.",
+    obj:"Força de quadríceps/glúteo — proteção contra o dano excêntrico das descidas do CIM.",
+    rest:"Sem descanso — direto para C1b."},
+   {id:"c1b",num:"C1b",name:"Flexão plantar no Smith sobre step",tag:"Panturrilha",track:true,
+    params:[["Séries × Reps","3 × 10–15"],["Carga base","25/30/30 kg"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Amplitude","Completa"]],
+    exec:"Antepé no step. Desça o calcanhar ABAIXO do step (alongamento pleno), pausa 1seg, suba até a ponta máxima, pausa 1seg no topo. Sem quicar no Aquiles.",
+    obj:"Sóleo/gastrocnêmio absorvem várias vezes o peso corporal por passada — investimento direto pra maratona.",
+    rest:"2min após o par C1 · 3 rodadas.",
+    warn:"Variação futura: alternar joelho estendido (gastro) e fletido (sóleo) entre semanas."},
+   {id:"c2a",num:"C2a",name:"Cadeira extensora unilateral + panturrilha no chão",tag:"Quadríceps excêntrico",track:true,
+    params:[["Séries × Reps","3 × 8 + 12–15 pant."],["Carga base","20 kg"],["Execução","1–2s sobe · 1s topo · 3–4s DESCE"],["RPE","8"]],
+    exec:"Eixo da máquina alinhado ao joelho, rolo acima do tornozelo. Suba forte, pausa 1seg, desça em 3–4seg — o peso não pode cair nos 30° finais. Toque leve e já suba. Direto após: panturrilha unilateral no chão, 12–15/lado.",
+    obj:"A excêntrica lenta é a versão de academia da frenagem de quadríceps nas descidas do CIM — efeito protetor pras milhas finais.",
+    rest:"60seg entre rodadas · 3 rodadas.",
+    warn:"Progressão: manter 20kg até 3×12 com a mesma qualidade de descida → subir carga e voltar pra 8."},
+   {id:"c2b",num:"C2b",name:"Cadeira adutora + prancha lateral",tag:"Adutores / Core lateral",track:true,
+    params:[["Séries × Reps","3 × 12 + 20–30s/lado"],["Carga base","50 kg"],["Execução","1s fecha · 2–3s abre"],["RPE","7"]],
+    exec:"Feche em 1seg, abra resistindo em 2–3seg. Direto após: prancha lateral 20–30seg por lado, quadril elevado.",
+    obj:"Adutores subtreinados em corredores — prevenção de virilha. Prancha lateral prepara o padrão do Copenhagen.",
+    rest:"60seg entre rodadas · 3 rodadas.",
+    warn:"Até ~06/09 — depois substituir por Copenhagen curto 2×6–8/lado."}
+  ]}
+];
+const EX_INDEX = {};
+EXERCISES.forEach(b=>b.items.forEach(x=>EX_INDEX[x.id]=x));
+
+// ================= storage =================
+const LS_FIELDS = "tp-fields-v2";     // campos atuais (rascunho)
+const LS_SESS   = "tp-sessions-v2";   // sessões concluídas
+const fields = JSON.parse(localStorage.getItem(LS_FIELDS) || "{}");
+let sessions = JSON.parse(localStorage.getItem(LS_SESS) || "[]");
+function saveFields(){ localStorage.setItem(LS_FIELDS, JSON.stringify(fields)); }
+function saveSessions(){ localStorage.setItem(LS_SESS, JSON.stringify(sessions)); }
+
+// ================= render exercícios =================
+const main = document.getElementById("blocks");
+EXERCISES.forEach(b=>{
+  const sec = document.createElement("section");
+  sec.className="block";
+  sec.innerHTML = `<div class="block-head"><span class="block-letter">${b.letter}</span><span class="block-title">${b.title}</span><span class="block-time">${b.time}</span></div><p class="block-note">${b.note}</p>`;
+  b.items.forEach(ex=>{
+    const d = fields[ex.id]||{};
+    const card = document.createElement("article");
+    card.className="ex";
+    card.innerHTML = `
+      <div class="ex-head"><span class="ex-num">${ex.num}</span><span class="ex-name">${ex.name}</span><span class="ex-tag">${ex.tag}</span></div>
+      <div class="ex-params">${ex.params.map(p=>`<div><div class="k">${p[0]}</div><div class="v">${p[1]}</div></div>`).join("")}</div>
+      <div class="ex-body">
+        <p><b class="lbl">Execução</b> — ${ex.exec}</p>
+        <p><b class="lbl gray">Objetivo</b> — ${ex.obj}</p>
+        <p><b class="lbl gray">Descanso</b> — ${ex.rest}</p>
+        ${ex.warn?`<div class="warn">${ex.warn}</div>`:""}
+      </div>
+      <div class="log">
+        <div class="log-title">Registro de hoje</div>
+        <div class="log-fields">
+          <div class="field"><label>Carga</label><input type="text" id="carga-${ex.id}" value="${d.carga||""}" placeholder="ex: 30kg"></div>
+          <div class="field"><label>Séries × reps</label><input type="text" id="reps-${ex.id}" value="${d.reps||""}" placeholder="ex: 4×8"></div>
+          <div class="field obs"><label>Observações</label><textarea id="obs-${ex.id}" rows="1" placeholder="dor, sensação, ajuste...">${d.obs||""}</textarea></div>
+        </div>
+      </div>`;
+    sec.appendChild(card);
+    ["carga","reps","obs"].forEach(f=>{
+      card.querySelector(`#${f}-${ex.id}`).addEventListener("input",e=>{
+        fields[ex.id]=fields[ex.id]||{}; fields[ex.id][f]=e.target.value; saveFields();
+      });
+    });
+  });
+  main.appendChild(sec);
+});
+
+// ================= countdown =================
+document.getElementById("cd").textContent = Math.max(0, Math.ceil((new Date("2026-12-06T00:00:00") - new Date())/864e5));
+
+// ================= sessões =================
+let editingId = null;
+const ovDone = document.getElementById("ovDone");
+
+document.getElementById("btnDone").addEventListener("click", ()=>{
+  editingId = null;
+  document.getElementById("doneTitle").textContent = "Treino concluído";
+  document.getElementById("doneSub").textContent = "Registra a sessão com os dados preenchidos nos exercícios.";
+  document.getElementById("mDur").value=""; document.getElementById("mInt").value=""; document.getElementById("mObs").value="";
+  ovDone.classList.add("open");
+});
+document.getElementById("mCancel").addEventListener("click", ()=>ovDone.classList.remove("open"));
+
+document.getElementById("mSave").addEventListener("click", ()=>{
+  const dur=document.getElementById("mDur").value, inten=document.getElementById("mInt").value, obs=document.getElementById("mObs").value.trim();
+  if(!dur||!inten){ alert("Preencha duração e intensidade."); return; }
+  const snapshot={};
+  Object.entries(fields).forEach(([id,v])=>{ if(v.carga||v.reps||v.obs) snapshot[id]={...v}; });
+  if(editingId){
+    const s = sessions.find(x=>x.id===editingId);
+    if(s){ s.dur=dur; s.int=inten; s.obs=obs; s.snapshot=snapshot; }
+  } else {
+    sessions.unshift({ id: Date.now().toString(36), ts: Date.now(), dur, int: inten, obs, snapshot, pain: null });
+  }
+  saveSessions(); renderHist(); checkPain();
+  ovDone.classList.remove("open");
+});
+
+function fmtDate(ts){ return new Date(ts).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}); }
+
+function renderHist(){
+  const el = document.getElementById("histList");
+  if(!sessions.length){ el.innerHTML='<div class="hist-empty">Nenhuma sessão registrada ainda.</div>'; return; }
+  el.innerHTML = sessions.map(s=>`
+    <div class="hist-item">
+      <div class="hist-row">
+        <span class="hist-date">${fmtDate(s.ts)}</span>
+        <span class="hist-meta">${s.dur} · int. ${s.int.charAt(0)}/5 · ${Object.keys(s.snapshot).length} exerc.</span>
+        ${s.pain!==null?`<span class="hist-pain">dor 24h: ${s.pain}/10</span>`:""}
+        <span class="hist-actions">
+          <button onclick="editSession('${s.id}')">Editar</button>
+          <button onclick="delSession('${s.id}')">Excluir</button>
+        </span>
+      </div>
+      ${s.obs?`<div class="hist-meta" style="margin-top:3px">${s.obs}</div>`:""}
+    </div>`).join("");
+}
+window.editSession = function(id){
+  const s = sessions.find(x=>x.id===id); if(!s) return;
+  editingId = id;
+  // recarrega snapshot nos campos para correção
+  Object.entries(s.snapshot).forEach(([exid,v])=>{
+    fields[exid]={...v};
+    ["carga","reps","obs"].forEach(f=>{
+      const el=document.getElementById(`${f}-${exid}`); if(el) el.value=v[f]||"";
+    });
+  });
+  saveFields();
+  document.getElementById("doneTitle").textContent = "Editar sessão de "+fmtDate(s.ts);
+  document.getElementById("doneSub").textContent = "Os campos dos exercícios foram recarregados com os dados desta sessão — corrija-os na página se necessário e salve.";
+  document.getElementById("mDur").value=s.dur; document.getElementById("mInt").value=s.int; document.getElementById("mObs").value=s.obs||"";
+  ovDone.classList.add("open");
+};
+window.delSession = function(id){
+  if(!confirm("Excluir esta sessão?")) return;
+  sessions = sessions.filter(x=>x.id!==id);
+  saveSessions(); renderHist(); checkPain();
+};
+
+// ================= dor 24h =================
+function checkPain(){
+  const banner=document.getElementById("painBanner");
+  const now=Date.now();
+  const pending = sessions.find(s=>s.pain===null && (now-s.ts)>=12*36e5 && (now-s.ts)<=72*36e5);
+  if(!pending){ banner.classList.remove("show"); return; }
+  document.getElementById("painQ").textContent = `Como está o posterior desde o treino de ${fmtDate(pending.ts)}? (0–10)`;
+  const scale=document.getElementById("painScale");
+  scale.innerHTML="";
+  for(let i=0;i<=10;i++){
+    const b=document.createElement("button");
+    b.textContent=i;
+    b.addEventListener("click",()=>{ pending.pain=i; saveSessions(); renderHist(); checkPain(); });
+    scale.appendChild(b);
+  }
+  banner.classList.add("show");
+}
+
+// ================= relatório =================
+const ovRep=document.getElementById("ovRep");
+let repWeeks=12;
+document.getElementById("btnReport").addEventListener("click",()=>{ renderReport(); ovRep.classList.add("open"); });
+document.getElementById("repClose").addEventListener("click",()=>ovRep.classList.remove("open"));
+document.querySelectorAll(".rep-controls button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".rep-controls button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active"); repWeeks=+b.dataset.w; renderReport();
+  });
+});
+
+function periodSessions(){
+  if(!repWeeks) return [...sessions].sort((a,b)=>a.ts-b.ts);
+  const cut=Date.now()-repWeeks*7*864e5;
+  return sessions.filter(s=>s.ts>=cut).sort((a,b)=>a.ts-b.ts);
+}
+function parseNum(str){ const m=(str||"").replace(",",".").match(/(\d+(\.\d+)?)/); return m?parseFloat(m[1]):null; }
+
+function sparkline(vals){
+  if(vals.length<2) return "";
+  const w=180,h=28,min=Math.min(...vals),max=Math.max(...vals),rng=(max-min)||1;
+  const pts=vals.map((v,i)=>`${(i/(vals.length-1))*w},${h-3-((v-min)/rng)*(h-6)}`).join(" ");
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="#C2451A" stroke-width="2"/></svg>`;
+}
+
+function renderReport(){
+  const ss=periodSessions();
+  const body=document.getElementById("repBody");
+  if(!ss.length){ body.innerHTML='<div class="hist-empty">Nenhuma sessão no período.</div>'; return; }
+  const weeks = repWeeks || Math.max(1,Math.ceil((Date.now()-ss[0].ts)/(7*864e5)));
+  const ints = ss.map(s=>+s.int.charAt(0));
+  const pains = ss.filter(s=>s.pain!==null).map(s=>s.pain);
+  let html=`
+    <div class="rep-sec"><div class="rep-h">Visão geral</div>
+    <div class="rep-kpis">
+      <div class="rep-kpi"><div class="k">Sessões</div><div class="v">${ss.length}</div></div>
+      <div class="rep-kpi"><div class="k">Média/semana</div><div class="v">${(ss.length/weeks).toFixed(1)}</div></div>
+      <div class="rep-kpi"><div class="k">Intensidade média</div><div class="v">${(ints.reduce((a,b)=>a+b,0)/ints.length).toFixed(1)}/5</div></div>
+      <div class="rep-kpi"><div class="k">Dor 24h média</div><div class="v">${pains.length?(pains.reduce((a,b)=>a+b,0)/pains.length).toFixed(1)+"/10":"—"}</div></div>
+    </div></div>
+    <div class="rep-sec"><div class="rep-h">Evolução por exercício</div>`;
+  Object.keys(EX_INDEX).filter(id=>EX_INDEX[id].track).forEach(id=>{
+    const rows = ss.filter(s=>s.snapshot[id]).map(s=>({d:fmtDate(s.ts), ...s.snapshot[id]}));
+    if(!rows.length) return;
+    const loads = rows.map(r=>parseNum(r.carga)).filter(v=>v!==null);
+    html+=`<div class="rep-ex">
+      <div class="rep-ex-name">${EX_INDEX[id].num} · ${EX_INDEX[id].name}</div>
+      <div class="rep-ex-data">${rows.map(r=>`${r.d}: ${r.carga||"—"}${r.reps?" · "+r.reps:""}`).join("  |  ")}</div>
+      ${loads.length>=2?sparkline(loads):""}
+    </div>`;
+  });
+  html+=`</div>
+    <div class="rep-sec"><div class="rep-h">Sessões e dor</div>
+    <div class="rep-ex-data">${ss.map(s=>`${fmtDate(s.ts)}: int ${s.int.charAt(0)}/5${s.pain!==null?", dor24h "+s.pain:""}${s.obs?" — "+s.obs:""}`).join("<br>")}</div></div>`;
+  body.innerHTML=html;
+}
+
+document.getElementById("repCopy").addEventListener("click",()=>{
+  const ss=periodSessions();
+  let txt=`RELATÓRIO DE TREINO — Rodrigo — pernas (reab. semimembranoso + força CIM)\nPeríodo: ${repWeeks?repWeeks+" semanas":"tudo"} · ${ss.length} sessões\n\n`;
+  ss.forEach(s=>{
+    txt+=`[${fmtDate(s.ts)}] duração ${s.dur} · intensidade ${s.int.charAt(0)}/5${s.pain!==null?` · dor24h ${s.pain}/10`:""}${s.obs?` · obs: ${s.obs}`:""}\n`;
+    Object.entries(s.snapshot).forEach(([id,v])=>{
+      const ex=EX_INDEX[id];
+      txt+=`  - ${ex?ex.num+" "+ex.name:id}: ${v.carga||"—"}${v.reps?" · "+v.reps:""}${v.obs?" · "+v.obs:""}\n`;
+    });
+    txt+="\n";
+  });
+  navigator.clipboard.writeText(txt).then(()=>{
+    const f=document.getElementById("copiedFlag");
+    f.classList.add("show"); setTimeout(()=>f.classList.remove("show"),1800);
+  });
+});
+
+// ================= backup =================
+document.getElementById("btnBackup").addEventListener("click",()=>{
+  const data=JSON.stringify({fields,sessions,exported:new Date().toISOString()},null,1);
+  const blob=new Blob([data],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`treino-rodrigo-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+});
+
+renderHist(); checkPain();
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treinos — Rodrigo & Luiza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Archivo+Narrow:wght@700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B1E24;
+  --steel:#6B7386;
+  --line:#E3E0D9;
+  --wash:#F7F5F1;
+  --accent:#C2451A;   /* Rodrigo */
+  --accent2:#1A6E8A;  /* Luiza */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:#fff;color:var(--ink);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.eyebrow{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);text-align:center}
+h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,7vw,44px);letter-spacing:-.02em;text-transform:uppercase;text-align:center;margin:6px 0 36px;line-height:1.05}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%;max-width:640px}
+a.card{display:block;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:26px 24px;background:#fff;transition:transform .1s ease,border-color .15s;position:relative;overflow:hidden}
+a.card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--c)}
+a.card:hover,a.card:focus-visible{transform:translateY(-2px);border-color:var(--c);outline:none}
+.card .who{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:-.01em}
+.card .what{font-size:13.5px;color:var(--steel);margin-top:6px;line-height:1.45}
+.card .go{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--c);margin-top:16px;display:inline-block}
+.card.r{--c:var(--accent)}
+.card.l{--c:var(--accent2)}
+footer{margin-top:40px;font-size:12px;color:var(--steel);text-align:center}
+</style>
+</head>
+<body>
+  <div class="eyebrow">Dashboard de treino</div>
+  <h1>Quem vai treinar?</h1>
+  <div class="cards">
+    <a class="card r" href="/rodrigo/">
+      <div class="who">Rodrigo</div>
+      <div class="what">Pernas · reabilitação semimembranoso + força · rumo ao CIM 06/12</div>
+      <span class="go">Abrir treino →</span>
+    </a>
+    <a class="card l" href="/luiza/">
+      <div class="who">Luiza</div>
+      <div class="what">Treino de força personalizado</div>
+      <span class="go">Abrir treino →</span>
+    </a>
+  </div>
+  <footer>Dica: abra a sua página e use "Adicionar à Tela de Início" para criar o atalho direto.</footer>
+</body>
+</html>
