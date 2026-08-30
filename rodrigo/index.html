@@ -167,6 +167,37 @@ select:focus{outline:none;border-color:var(--accent)}
   input,textarea{border:1px solid #bbb}
   header{padding-top:0}
 }
+
+/* ===================== PACER DE TEMPO ===================== */
+.btn-pacer{background:var(--wash);color:var(--ink);border:1.5px solid var(--line);padding:5px 10px;font-size:11px;border-radius:4px;white-space:nowrap}
+.btn-pacer:hover{border-color:var(--accent);color:var(--accent)}
+#ovPacer{background:rgba(27,30,36,.86);align-items:center;padding:0}
+.pacer{background:#fff;width:100%;max-width:520px;min-height:100%;display:flex;flex-direction:column;padding:max(16px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));margin:0}
+@media(min-width:560px){.pacer{min-height:0;border-radius:10px;border-top:5px solid var(--accent);margin:auto;padding-bottom:24px}}
+.pacer-head{display:flex;align-items:flex-start;gap:10px;border-bottom:1.5px solid var(--line);padding-bottom:12px}
+.pacer-head .t{flex:1;min-width:0}
+.pacer-name{font-family:'Archivo',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.01em;line-height:1.15}
+.pacer-formula{font-family:'Archivo Narrow',sans-serif;font-size:12px;letter-spacing:.14em;color:var(--steel);margin-top:3px;text-transform:uppercase}
+.pacer-ico{background:var(--wash);border:1.5px solid var(--line);border-radius:4px;width:38px;height:38px;padding:0;font-size:15px;color:var(--ink);flex:0 0 auto}
+.pacer-ico.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pacer-stage{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:22px 0;min-height:0}
+.pacer-fase{text-align:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,11vw,46px);text-transform:uppercase;letter-spacing:-.02em;line-height:1}
+.pacer-count{text-align:center;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:clamp(52px,20vw,78px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#pacerCv{width:100%;height:140px;display:block}
+.pacer-score{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--line);gap:1px;border:1.5px solid var(--line)}
+.pacer-score>div{background:#fff;padding:10px 4px;text-align:center}
+.pacer-score .k{font-family:'Archivo Narrow',sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.pacer-score .v{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums;margin-top:1px}
+.pacer-actions{display:flex;gap:8px;padding-top:14px}
+.pacer-actions .btn-primary{flex:1;font-size:16px;padding:17px 0}
+.pacer-cfg{display:none;border-top:1.5px solid var(--line);margin-top:14px;padding-top:10px}
+.pacer-cfg.open{display:block}
+.pacer-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0}
+.pacer-row label{font-size:13.5px;color:var(--slate)}
+.pacer-step{display:flex;align-items:center;gap:3px}
+.pacer-step button{width:36px;height:36px;padding:0;background:var(--wash);border:1.5px solid var(--line);color:var(--ink);font-size:17px;border-radius:4px}
+.pacer-step output{min-width:50px;text-align:center;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}
+.pacer-note{font-size:12px;line-height:1.5;color:var(--steel);border-top:1.5px solid var(--line);margin-top:10px;padding-top:10px}
 </style>
 </head>
 <body>
@@ -291,6 +322,56 @@ select:focus{outline:none;border-color:var(--accent)}
   </div>
 </div>
 
+<!-- PACER de tempo -->
+<div class="overlay" id="ovPacer">
+  <div class="pacer">
+    <div class="pacer-head">
+      <div class="t">
+        <div class="pacer-name" id="pcName">—</div>
+        <div class="pacer-formula" id="pcFormula">—</div>
+      </div>
+      <button class="pacer-ico on" id="pcSom" title="Som">&#9834;</button>
+      <button class="pacer-ico" id="pcCfg" title="Ajustes">&#9881;</button>
+      <button class="pacer-ico" id="pcClose" title="Fechar">&#10005;</button>
+    </div>
+
+    <div class="pacer-stage">
+      <div>
+        <div class="pacer-fase" id="pcFase">Pronto</div>
+        <div class="pacer-count" id="pcCount">—</div>
+      </div>
+      <canvas id="pacerCv" aria-hidden="true"></canvas>
+    </div>
+
+    <div class="pacer-score">
+      <div><div class="k">Rep</div><div class="v" id="pcRep">0/0</div></div>
+      <div><div class="k">Série</div><div class="v" id="pcSerie">1</div></div>
+      <div><div class="k">Sob tensão</div><div class="v" id="pcTut">0s</div></div>
+    </div>
+
+    <div class="pacer-actions">
+      <button class="btn-primary" id="pcGo">Iniciar</button>
+      <button class="btn-ghost" id="pcReset">Zerar</button>
+    </div>
+
+    <div class="pacer-cfg" id="pcCfgBox">
+      <div class="pacer-row"><label id="pcLabA">Fase 1</label>
+        <div class="pacer-step"><button data-k="a" data-d="-1">&minus;</button><output id="pcOa">3s</output><button data-k="a" data-d="1">+</button></div></div>
+      <div class="pacer-row"><label>Pausa no fim da fase 1</label>
+        <div class="pacer-step"><button data-k="pa" data-d="-1">&minus;</button><output id="pcOpa">0s</output><button data-k="pa" data-d="1">+</button></div></div>
+      <div class="pacer-row"><label id="pcLabB">Fase 2</label>
+        <div class="pacer-step"><button data-k="b" data-d="-1">&minus;</button><output id="pcOb">3s</output><button data-k="b" data-d="1">+</button></div></div>
+      <div class="pacer-row"><label>Pausa no fim da fase 2</label>
+        <div class="pacer-step"><button data-k="pb" data-d="-1">&minus;</button><output id="pcOpb">0s</output><button data-k="pb" data-d="1">+</button></div></div>
+      <div class="pacer-row"><label>Repetições</label>
+        <div class="pacer-step"><button data-k="reps" data-d="-1">&minus;</button><output id="pcOreps">8</output><button data-k="reps" data-d="1">+</button></div></div>
+      <div class="pacer-row"><label>Descanso</label>
+        <div class="pacer-step"><button data-k="rest" data-d="-15">&minus;</button><output id="pcOrest">90s</output><button data-k="rest" data-d="15">+</button></div></div>
+      <p class="pacer-note">A bolinha anda em velocidade constante — é isso que define o HSR. Acelerar no fim da fase lenta descaracteriza o protocolo. A tela fica acesa enquanto a série roda.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 // ===================== PRESCRIÇÃO =====================
 // type: "check" (sem carga, apenas feito/não feito) | "sets" (uma linha por série)
@@ -303,12 +384,12 @@ const BLOCKS = [
    exec:"Um pé no chão, outra perna elevada. Suba o quadril até alinhar ombro-quadril-joelho e sustente 30seg sem deixar a pelve cair. Glúteo contraído, costelas fechadas.",
    obj:"Ativar glúteo máximo e estabilidade pélvica antes da carga.",
    rest:"Sem descanso — direto para A2."},
-  {id:"abd_pe",num:"A2",name:"Abdução de quadril em pé com band",tag:"Glúteo médio",type:"check",
+  {id:"abd_pe",tempo:{a:1,pa:0,b:2,pb:0,la:"Abre",lb:"Volta",reps:15,rest:0},num:"A2",name:"Abdução de quadril em pé com band",tag:"Glúteo médio",type:"check",
    params:[["Passadas","2"],["Reps","15/lado"],["Carga","Mini band tornozelos"],["Execução","1s abre · 2s volta"]],
    exec:"Band nos tornozelos. Abra a perna lateralmente sem inclinar o tronco nem rodar o pé pra fora; volte resistindo à banda.",
    obj:"Glúteo médio — estabilizador da pelve no apoio unipodal da corrida.",
    rest:"Sem descanso — direto para A3."},
-  {id:"abd_lat",num:"A3",name:"Abdução em decúbito lateral (star), cotovelo no chão",tag:"Quadril lateral",type:"check",
+  {id:"abd_lat",tempo:{a:1,pa:0,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:0},num:"A3",name:"Abdução em decúbito lateral (star), cotovelo no chão",tag:"Quadril lateral",type:"check",
    params:[["Passadas","2"],["Reps","12/lado"],["Carga","Corporal"],["Execução","1s sobe · 2s desce"]],
    exec:"De lado, apoiado no cotovelo, corpo alinhado. Eleve a perna de cima estendida, calcanhar guiando, sem rolar o quadril para trás.",
    obj:"Glúteo médio/mínimo em cadeia lateral — outro vetor de abdução.",
@@ -328,21 +409,21 @@ const BLOCKS = [
 {letter:"B", title:"Força posterior — Reabilitação", time:"~19 min",
  note:"Protocolo HSR nos dois primeiros · execução lenta · sentinela: deadlift unilateral. Hip thrust é força pura (glúteo saudável), sem tempo lento.",
  items:[
-  {id:"rdl",num:"B1",name:"Deadlift unilateral (RDL)",tag:"Semimembranoso",type:"sets",
+  {id:"rdl",tempo:{a:3,pa:1,b:2,pb:0,la:"Desce",lb:"Sobe",reps:12,rest:90},num:"B1",name:"Deadlift unilateral (RDL)",tag:"Semimembranoso",type:"sets",
    sets:[{c:"20kg",r:"12"},{c:"25kg",r:"10"},{c:"30kg",r:"8"},{c:"30kg",r:"8"}],
    params:[["Séries","4 (piramidal)"],["Execução","3s desce · 1s pausa · 2s sobe"],["Descanso","60–90s após as 2 pernas"],["RPE","7–8"]],
    exec:"Quadril como dobradiça: desça em 3seg com coluna neutra até o alongamento no posterior. Pausa 1seg no fundo SEM relaxar, suba em 2seg. Sem quicar.",
    obj:"Exercício central da reabilitação: carga em posição alongada — melhor evidência para remodelação tendínea.",
    rest:"Alterna pernas; após as duas, 60–90seg de pausa real (~2–3min por perna).",
    warn:"SENTINELA — monitorar dor nas 24h. Progressão: 4×8 com 30kg confortável → +2,5kg."},
-  {id:"legcurl",num:"B2",name:"Standing leg curl unilateral",tag:"Isquiotibiais",type:"sets",
+  {id:"legcurl",tempo:{a:3,pa:1,b:3,pb:0,la:"Flexiona",lb:"Volta",reps:10,rest:60},num:"B2",name:"Standing leg curl unilateral",tag:"Isquiotibiais",type:"sets",
    sets:[{c:"5kg",r:"8–10"},{c:"5kg",r:"8–10"},{c:"5kg",r:"8–10"}],
    params:[["Séries","3 por perna"],["Execução","3s flexiona · 1s pico · 3s volta"],["Descanso","60s"],["RPE","7–8"]],
    exec:"Tronco estável, sem inclinar pra ajudar. Flexione em 3seg, segure 1–2seg, retorne em 3seg. Evite a flexão terminal completa se puxar na inserção.",
    obj:"Isolamento com quadril neutro — flexão de joelho com mínima compressão na inserção.",
    rest:"Alterna pernas + 60seg entre séries.",
    warn:"Manter 5kg até rodar sem dor; só então progredir."},
-  {id:"hipthrust",num:"B3",name:"Hip thrust bilateral",tag:"Glúteo / Força",type:"sets",
+  {id:"hipthrust",tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:60},num:"B3",name:"Hip thrust bilateral",tag:"Glúteo / Força",type:"sets",
    sets:[{c:"?",r:"12"},{c:"?",r:"10"},{c:"?",r:"10"}],
    params:[["Séries × Reps","3 × 10–12"],["Execução","1s sobe · 1s topo · 2s desce"],["Descanso","60s"],["RPE","7–8"]],
    exec:"Costas apoiadas no banco, barra ou halter sobre o quadril, pés na largura do quadril. Suba até extensão completa, contraia 1seg no topo, desça em 2seg. Queixo levemente para baixo, sem hiperextender a lombar.",
@@ -353,27 +434,27 @@ const BLOCKS = [
 {letter:"C", title:"Força geral — Super-séries", time:"~18 min",
  note:"C1 no Smith · C2 usa UMA máquina por vez, pareada com exercício de peso corporal ao lado.",
  items:[
-  {id:"agacho",num:"C1a",name:"Agachamento guiado (Smith)",tag:"Quadríceps / Glúteo",type:"sets",
+  {id:"agacho",tempo:{a:2,pa:0,b:1,pb:0,la:"Desce",lb:"Sobe forte",reps:10,rest:0},num:"C1a",name:"Agachamento guiado (Smith)",tag:"Quadríceps / Glúteo",type:"sets",
    sets:[{c:"25kg",r:"10"},{c:"30kg",r:"8"},{c:"30kg",r:"8"}],
    params:[["Séries","3"],["Execução","2s desce · sobe forte"],["Descanso","Direto para C1b"],["RPE","7–8"]],
    exec:"Pés à frente da barra, tíbia próxima da vertical. Desça em 2seg até profundidade confortável, suba com força — a concêntrica pode ser explosiva.",
    obj:"Força de quadríceps/glúteo — proteção contra o dano excêntrico das descidas do CIM.",
    rest:"Sem descanso — direto para C1b."},
-  {id:"panturrilha",num:"C1b",name:"Flexão plantar no Smith sobre step",tag:"Panturrilha",type:"sets",
+  {id:"panturrilha",tempo:{a:2,pa:1,b:2,pb:1,la:"Sobe",lb:"Desce",reps:15,rest:120},num:"C1b",name:"Flexão plantar no Smith sobre step",tag:"Panturrilha",type:"sets",
    sets:[{c:"25kg",r:"15"},{c:"30kg",r:"12"},{c:"30kg",r:"12"}],
    params:[["Séries","3"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Descanso","2min entre rodadas"],["Amplitude","Completa"]],
    exec:"Antepé no step. Desça o calcanhar ABAIXO do nível do step, pausa 1seg, suba até a ponta máxima, pausa 1seg no topo. Sem quicar no Aquiles.",
    obj:"Sóleo/gastrocnêmio absorvem várias vezes o peso corporal por passada — investimento direto pra maratona.",
    rest:"2min após completar o par C1 · 3 rodadas.",
    warn:"Variação futura: alternar joelho estendido (gastro) e fletido (sóleo) entre semanas."},
-  {id:"extensora",num:"C2a",name:"Cadeira extensora unilateral + panturrilha no chão",tag:"Quadríceps excêntrico",type:"sets",
+  {id:"extensora",tempo:{a:2,pa:1,b:3,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:60},num:"C2a",name:"Cadeira extensora unilateral + panturrilha no chão",tag:"Quadríceps excêntrico",type:"sets",
    sets:[{c:"20kg",r:"8"},{c:"20kg",r:"8"},{c:"20kg",r:"8"}],
    params:[["Séries","3 + panturrilha 12–15"],["Execução","1–2s sobe · 1s topo · 3–4s DESCE"],["Descanso","60s"],["RPE","8"]],
    exec:"Eixo da máquina alinhado ao joelho, rolo acima do tornozelo. Suba forte, pausa 1seg, desça em 3–4seg — o peso não pode cair nos 30° finais. Direto após: panturrilha unilateral no chão, 12–15/lado.",
    obj:"A excêntrica lenta é a versão de academia da frenagem de quadríceps nas descidas do CIM.",
    rest:"60seg entre rodadas · 3 rodadas.",
    warn:"Progressão: manter 20kg até 3×12 com a mesma qualidade de descida → subir carga e voltar pra 8."},
-  {id:"adutora",num:"C2b",name:"Cadeira adutora + prancha lateral",tag:"Adutores / Core lateral",type:"sets",
+  {id:"adutora",tempo:{a:1,pa:0,b:3,pb:0,la:"Fecha",lb:"Abre",reps:12,rest:60},num:"C2b",name:"Cadeira adutora + prancha lateral",tag:"Adutores / Core lateral",type:"sets",
    sets:[{c:"50kg",r:"12"},{c:"50kg",r:"12"},{c:"50kg",r:"12"}],
    params:[["Séries","3 + prancha lateral 20–30s"],["Execução","1s fecha · 2–3s abre"],["Descanso","60s"],["RPE","7"]],
    exec:"Feche em 1seg, abra resistindo em 2–3seg. Direto após: prancha lateral 20–30seg por lado, quadril elevado.",
@@ -451,7 +532,7 @@ function renderBlocks(){
         </div>`;
       }
       card.innerHTML=`
-        <div class="ex-head"><span class="ex-num">${ex.num}</span><span class="ex-name">${ex.name}</span><span class="ex-tag">${ex.tag}</span></div>
+        <div class="ex-head"><span class="ex-num">${ex.num}</span><span class="ex-name">${ex.name}</span>${ex.tempo?`<button class="btn-pacer" id="pc-${ex.id}">▸ Pacer</button>`:""}<span class="ex-tag">${ex.tag}</span></div>
         <div class="ex-params">${ex.params.map(p=>`<div><div class="k">${p[0]}</div><div class="v">${p[1]}</div></div>`).join("")}</div>
         <div class="ex-body">
           <p><b class="lbl">Execução</b> — ${ex.exec}</p>
@@ -462,6 +543,7 @@ function renderBlocks(){
       sec.appendChild(card);
 
       // listeners
+      if(ex.tempo) card.querySelector(`#pc-${ex.id}`).addEventListener("click",()=>Pacer.open(ex));
       const obsEl=card.querySelector(`#obs-${ex.id}`);
       obsEl.addEventListener("input",e=>{ getF(ex.id).obs=e.target.value; saveFields(); });
       if(ex.type==="check"){
@@ -687,6 +769,232 @@ document.getElementById("fileImport").addEventListener("change",e=>{
   };
   rd.readAsText(file);
 });
+
+// ===================== PACER DE TEMPO =====================
+const Pacer = (function(){
+  const $=id=>document.getElementById(id);
+  const ov=$("ovPacer"), cv=$("pacerCv"), ctx=cv.getContext("2d");
+  const LIM={a:[1,10],pa:[0,6],b:[1,10],pb:[0,6],reps:[1,30],rest:[0,300]};
+  const CSS=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  let cfg=null, ex=null, modo="idle", t0=0, rep=0, serie=1, raf=null, som=true, wake=null;
+  let faseAnt=-1, segAnt=-1, corA="", corB="", corH="";
+  const ciclo=()=>cfg.a+cfg.pa+cfg.b+cfg.pb;
+
+  /* --- som --- */
+  let ac=null;
+  function bip(f,d,v){
+    if(!som) return;
+    try{
+      ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+      if(ac.state==="suspended") ac.resume();
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.type="sine"; o.frequency.value=f;
+      g.gain.setValueAtTime(0,ac.currentTime);
+      g.gain.linearRampToValueAtTime(v,ac.currentTime+.012);
+      g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);
+      o.connect(g); g.connect(ac.destination);
+      o.start(); o.stop(ac.currentTime+d+.02);
+    }catch(e){}
+  }
+  const vibra=m=>{ if(navigator.vibrate) navigator.vibrate(m); };
+
+  /* --- tela acesa --- */
+  async function acordar(){ try{ if("wakeLock" in navigator) wake=await navigator.wakeLock.request("screen"); }catch(e){} }
+  function liberar(){ try{ wake&&wake.release(); wake=null; }catch(e){} }
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&modo==="work") acordar(); });
+
+  /* --- amostragem do ciclo: y 0=início, 1=fim da fase 1 --- */
+  function amostra(t){
+    let x=t;
+    if(x<cfg.a)  return {i:0,rest:cfg.a-x, y:x/cfg.a};
+    x-=cfg.a;
+    if(x<cfg.pa) return {i:1,rest:cfg.pa-x,y:1};
+    x-=cfg.pa;
+    if(x<cfg.b)  return {i:2,rest:cfg.b-x, y:1-x/cfg.b};
+    x-=cfg.b;
+    return {i:3,rest:Math.max(0,cfg.pb-x),y:0};
+  }
+  const faseNome=i=>[cfg.la,"Segura",cfg.lb,"Segura"][i];
+  const faseCor =i=>[corA,corH,corB,corH][i];
+
+  /* --- canvas --- */
+  let W=0,H=0;
+  function fit(){
+    const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    if(!r.width) return;
+    cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d);
+    ctx.setTransform(d,0,0,d,0,0); W=r.width; H=r.height;
+  }
+  window.addEventListener("resize",()=>{ fit(); if(modo!=="work") desenha(null); });
+
+  function desenha(t){
+    if(!W) fit();
+    ctx.clearRect(0,0,W,H);
+    const padX=14,padY=20,w=W-padX*2,h=H-padY*2,C=ciclo();
+    const px=s=>padX+(s/C)*w, py=y=>padY+y*h;
+
+    ctx.strokeStyle="rgba(27,30,36,.10)"; ctx.lineWidth=1;
+    [0,1].forEach(y=>{ ctx.beginPath(); ctx.moveTo(padX,py(y)); ctx.lineTo(padX+w,py(y)); ctx.stroke(); });
+    ctx.strokeStyle="rgba(27,30,36,.16)";
+    for(let s=1;s<C;s++){ const x=px(s); ctx.beginPath(); ctx.moveTo(x,py(0)-5); ctx.lineTo(x,py(0)+3); ctx.stroke(); }
+
+    const pts=[[0,0],[cfg.a,1],[cfg.a+cfg.pa,1],[cfg.a+cfg.pa+cfg.b,0],[C,0]];
+    ctx.beginPath(); ctx.moveTo(px(pts[0][0]),py(pts[0][1]));
+    pts.slice(1).forEach(p=>ctx.lineTo(px(p[0]),py(p[1])));
+    ctx.strokeStyle=CSS("--line"); ctx.lineWidth=3; ctx.lineJoin="round"; ctx.lineCap="round"; ctx.stroke();
+
+    if(t===null) return;
+    const a=amostra(t), c=faseCor(a.i);
+
+    ctx.beginPath(); ctx.moveTo(px(0),py(0));
+    for(let s=0;s<=t;s+=.02) ctx.lineTo(px(s),py(amostra(s).y));
+    ctx.strokeStyle=c; ctx.lineWidth=3; ctx.stroke();
+
+    ctx.beginPath(); ctx.moveTo(px(t),padY-8); ctx.lineTo(px(t),padY+h+8);
+    ctx.strokeStyle="rgba(27,30,36,.18)"; ctx.lineWidth=1; ctx.stroke();
+
+    const bx=px(t), by=py(a.y), k=(a.i===1||a.i===3)?1+Math.sin(t*9)*.07:1;
+    ctx.beginPath(); ctx.arc(bx,by,13*k,0,7); ctx.fillStyle="rgba(27,30,36,.09)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(bx,by,8.5*k,0,7); ctx.fillStyle=c; ctx.fill();
+    ctx.beginPath(); ctx.arc(bx,by,8.5*k,0,7); ctx.strokeStyle="#fff"; ctx.lineWidth=2.5; ctx.stroke();
+  }
+
+  /* --- loop --- */
+  function loop(){
+    const dec=(performance.now()-t0)/1000;
+
+    if(modo==="prep"){
+      const r=3-dec;
+      if(r<=0){ modo="work"; t0=performance.now(); faseAnt=-1; bip(880,.16,.22); raf=requestAnimationFrame(loop); return; }
+      $("pcFase").textContent="Prepara"; $("pcFase").style.color=CSS("--steel");
+      $("pcCount").textContent=Math.ceil(r);
+      const s=Math.ceil(r); if(s!==segAnt){ segAnt=s; bip(520,.09,.14); }
+      desenha(null);
+    }
+    else if(modo==="work"){
+      const C=ciclo();
+      rep=Math.floor(dec/C);
+      if(rep>=cfg.reps){ fimSerie(); return; }
+      const t=dec-rep*C, a=amostra(t);
+      if(a.i!==faseAnt){
+        faseAnt=a.i;
+        if(a.i===0) bip(392,.13,.2);
+        else if(a.i===2) bip(659,.13,.2);
+        else { bip(523,.07,.14); vibra(28); }
+      }
+      $("pcFase").textContent=faseNome(a.i); $("pcFase").style.color=faseCor(a.i);
+      $("pcCount").textContent=a.rest.toFixed(1);
+      $("pcRep").textContent=(rep+1)+"/"+cfg.reps;
+      $("pcTut").textContent=Math.floor(dec)+"s";
+      desenha(t);
+    }
+    else if(modo==="rest"){
+      const r=cfg.rest-dec;
+      if(r<=0){
+        modo="idle"; $("pcFase").textContent="Vai"; $("pcFase").style.color=CSS("--ok");
+        $("pcCount").textContent="—"; $("pcGo").textContent="Iniciar série "+serie;
+        bip(880,.3,.22); vibra([90,60,90]); desenha(null); return;
+      }
+      $("pcFase").textContent="Descanso"; $("pcFase").style.color=CSS("--steel");
+      $("pcCount").textContent=Math.floor(r/60)+":"+String(Math.floor(r%60)).padStart(2,"0");
+      const s=Math.ceil(r); if(s!==segAnt){ segAnt=s; if(s<=3) bip(520,.09,.16); }
+      desenha(null);
+    }
+    raf=requestAnimationFrame(loop);
+  }
+
+  function fimSerie(){
+    cancelAnimationFrame(raf); liberar();
+    $("pcRep").textContent=cfg.reps+"/"+cfg.reps;
+    $("pcTut").textContent=Math.round(cfg.reps*ciclo())+"s";
+    bip(784,.2,.22); setTimeout(()=>bip(1046,.3,.22),190); vibra([70,50,70,50,140]);
+    serie++; $("pcSerie").textContent=serie;
+    $("pcGo").textContent="Iniciar série "+serie;
+    if(cfg.rest>0){ modo="rest"; t0=performance.now(); segAnt=-1; raf=requestAnimationFrame(loop); }
+    else { modo="idle"; $("pcFase").textContent="Série feita"; $("pcFase").style.color=CSS("--ok"); $("pcCount").textContent="—"; desenha(null); }
+  }
+
+  /* --- controles --- */
+  $("pcGo").addEventListener("click",()=>{
+    if(modo==="work"||modo==="prep"){
+      cancelAnimationFrame(raf); liberar(); modo="idle";
+      $("pcFase").textContent="Pausado"; $("pcFase").style.color=CSS("--steel");
+      $("pcGo").textContent="Retomar série "+serie; desenha(null); return;
+    }
+    bip(1,.01,.001);
+    modo="prep"; t0=performance.now(); segAnt=-1; rep=0;
+    $("pcRep").textContent="0/"+cfg.reps; $("pcTut").textContent="0s";
+    $("pcGo").textContent="Pausar";
+    acordar(); cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);
+  });
+  $("pcReset").addEventListener("click",()=>{
+    cancelAnimationFrame(raf); liberar(); modo="idle"; rep=0; serie=1;
+    $("pcFase").textContent="Pronto"; $("pcFase").style.color=CSS("--ink");
+    $("pcCount").textContent=ciclo().toFixed(1);
+    $("pcRep").textContent="0/"+cfg.reps; $("pcSerie").textContent="1"; $("pcTut").textContent="0s";
+    $("pcGo").textContent="Iniciar"; desenha(null);
+  });
+  $("pcSom").addEventListener("click",e=>{ som=!som; e.currentTarget.classList.toggle("on",som); if(som) bip(660,.1,.18); });
+  $("pcCfg").addEventListener("click",e=>{
+    e.currentTarget.classList.toggle("on",$("pcCfgBox").classList.toggle("open"));
+  });
+  $("pcClose").addEventListener("click",fechar);
+  ov.addEventListener("click",e=>{ if(e.target===ov) fechar(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&ov.classList.contains("open")) fechar(); });
+
+  document.querySelectorAll(".pacer-step button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const k=b.dataset.k, d=+b.dataset.d, [lo,hi]=LIM[k];
+      cfg[k]=Math.min(hi,Math.max(lo,cfg[k]+d));
+      salvaCfg(); sync(); bip(700,.05,.1);
+    });
+  });
+
+  /* --- persistência dos ajustes por exercício --- */
+  const LS_PACER="tp-pacer-v1";
+  function salvaCfg(){
+    if(!ex) return;
+    const all=JSON.parse(localStorage.getItem(LS_PACER)||"{}");
+    all[ex.id]={a:cfg.a,pa:cfg.pa,b:cfg.b,pb:cfg.pb,reps:cfg.reps,rest:cfg.rest};
+    localStorage.setItem(LS_PACER,JSON.stringify(all));
+  }
+
+  function sync(){
+    $("pcOa").textContent=cfg.a+"s";  $("pcOpa").textContent=cfg.pa+"s";
+    $("pcOb").textContent=cfg.b+"s";  $("pcOpb").textContent=cfg.pb+"s";
+    $("pcOreps").textContent=cfg.reps;$("pcOrest").textContent=cfg.rest+"s";
+    $("pcLabA").textContent=cfg.la; $("pcLabB").textContent=cfg.lb;
+    $("pcFormula").textContent=`${cfg.la} ${cfg.a}s · pausa ${cfg.pa}s · ${cfg.lb} ${cfg.b}s · pausa ${cfg.pb}s`;
+    $("pcRep").textContent=rep+"/"+cfg.reps;
+    if(modo==="idle"&&$("pcCount").textContent!=="—") $("pcCount").textContent=ciclo().toFixed(1);
+    // fase mais lenta recebe o destaque
+    corA = cfg.a>=cfg.b ? CSS("--accent") : CSS("--slate");
+    corB = cfg.a>=cfg.b ? CSS("--slate")  : CSS("--accent");
+    corH = CSS("--steel");
+    if(modo!=="work") desenha(null);
+  }
+
+  function open(exercicio){
+    ex=exercicio;
+    const salvo=(JSON.parse(localStorage.getItem(LS_PACER)||"{}"))[ex.id]||{};
+    cfg=Object.assign({},ex.tempo,salvo);
+    modo="idle"; rep=0; serie=1;
+    $("pcName").textContent=ex.num+" · "+ex.name;
+    $("pcFase").textContent="Pronto"; $("pcFase").style.color=CSS("--ink");
+    $("pcSerie").textContent="1"; $("pcTut").textContent="0s";
+    $("pcGo").textContent="Iniciar";
+    $("pcCfgBox").classList.remove("open"); $("pcCfg").classList.remove("on");
+    ov.classList.add("open");
+    requestAnimationFrame(()=>{ fit(); sync(); $("pcCount").textContent=ciclo().toFixed(1); desenha(null); });
+  }
+  function fechar(){
+    cancelAnimationFrame(raf); liberar(); modo="idle";
+    ov.classList.remove("open");
+  }
+
+  return {open};
+})();
 
 renderBlocks(); renderHist(); checkPain();
 </script>
