@@ -198,9 +198,36 @@ select:focus{outline:none;border-color:var(--accent)}
 .pacer-step button{width:36px;height:36px;padding:0;background:var(--wash);border:1.5px solid var(--line);color:var(--ink);font-size:17px;border-radius:4px}
 .pacer-step output{min-width:50px;text-align:center;font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}
 .pacer-note{font-size:12px;line-height:1.5;color:var(--steel);border-top:1.5px solid var(--line);margin-top:10px;padding-top:10px}
+/* --- badge de descanso: vive fora do pacer --- */
+#restBadge{display:none;position:fixed;left:0;right:0;top:0;z-index:40;background:var(--ink);color:#fff;
+  padding:10px 16px max(10px,env(safe-area-inset-top));align-items:center;gap:12px;cursor:pointer;
+  box-shadow:0 2px 10px rgba(27,30,36,.22)}
+#restBadge.show{display:flex}
+#restBadge.over{background:var(--ok)}
+#restBadge .rb-t{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;
+  text-transform:uppercase;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#restBadge .rb-n{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:19px;font-variant-numeric:tabular-nums}
+#restBadge .rb-a{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:#C9CDD6;border:1px solid #4A5162;border-radius:3px;padding:2px 7px}
+#restBadge.over .rb-a{color:#fff;border-color:rgba(255,255,255,.5)}
+body.badge-on{padding-top:52px}
+
+/* --- próximo exercício na transição --- */
+.pacer-prox{display:none;text-align:center;font-size:13.5px;color:var(--slate);background:var(--wash);
+  border:1.5px solid var(--line);border-radius:6px;padding:9px 12px;margin-top:2px}
+.pacer-prox.show{display:block}
+.pacer-actions .btn-ghost.wide{padding:17px 14px;font-size:13px}
+@media print{#restBadge{display:none!important}body.badge-on{padding-top:0}}
 </style>
 </head>
 <body>
+
+<div id="restBadge">
+  <span class="rb-t" id="rbTxt">—</span>
+  <span class="rb-n" id="rbNum">—</span>
+  <span class="rb-a">abrir</span>
+</div>
+
 <div class="wrap">
 
 <header>
@@ -223,7 +250,7 @@ select:focus{outline:none;border-color:var(--accent)}
   </div>
 
   <div class="meta">
-    <div><div class="k">Duração alvo</div><div class="v">~42 min</div></div>
+    <div><div class="k">Duração alvo</div><div class="v">~42 min <small>· teto de 60</small></div></div>
     <div><div class="k">Frequência</div><div class="v">1–2x/sem <small>48h antes de corrida intensa</small></div></div>
     <div><div class="k">Regra de dor</div><div class="v">≤3/10 <small>· basal em 24h</small></div></div>
     <div><div class="k">Sentinela</div><div class="v">Deadlift uni.</div></div>
@@ -240,7 +267,8 @@ select:focus{outline:none;border-color:var(--accent)}
   </div>
   <div class="side-card">
     <div class="side-h">Progressões planejadas</div>
-    <div class="mile"><span class="date">~06/09</span><span>Adutora sai → <b>Copenhagen curto</b> 2×6–8/lado. Downhill entra na corrida (alinhar c/ Danilo).</span></div>
+    <div class="mile"><span class="date">Feito</span><span>Adutora e prancha lateral saíram. <b>Copenhagen curto</b> 2×6–8/lado migrou para os dias de superiores.</span></div>
+    <div class="mile"><span class="date">~06/09</span><span>Downhill entra na corrida, 1x/sem (alinhar c/ Danilo).</span></div>
     <div class="mile"><span class="date">12→3 sem</span><span>4–6 sessões de descida antes do taper. Passada curta + cadência alta em declive.</span></div>
     <div class="mile"><span class="date">−2 sem</span><span>Manter força até aqui, depois reduzir para o taper.</span></div>
     <div class="mile"><span class="date">Futuro</span><span>Walking lunge substitui agachamento Smith · Nordic só com tendão assintomático.</span></div>
@@ -345,13 +373,19 @@ select:focus{outline:none;border-color:var(--accent)}
 
     <div class="pacer-score">
       <div><div class="k">Rep</div><div class="v" id="pcRep">0/0</div></div>
-      <div><div class="k">Série</div><div class="v" id="pcSerie">1</div></div>
+      <div><div class="k">Série</div><div class="v" id="pcSerie">1/1</div></div>
       <div><div class="k">Sob tensão</div><div class="v" id="pcTut">0s</div></div>
     </div>
 
+    <div class="pacer-prox" id="pcProx"></div>
+
     <div class="pacer-actions">
       <button class="btn-primary" id="pcGo">Iniciar</button>
-      <button class="btn-ghost" id="pcReset">Zerar</button>
+      <button class="btn-ghost wide" id="pcFim">Encerrar série</button>
+    </div>
+    <div class="pacer-actions">
+      <button class="btn-ghost wide" id="pcMais" style="flex:1">+15 seg</button>
+      <button class="btn-ghost wide" id="pcVolta" style="flex:1">Voltar e continuar</button>
     </div>
 
     <div class="pacer-cfg" id="pcCfgBox">
@@ -367,7 +401,7 @@ select:focus{outline:none;border-color:var(--accent)}
         <div class="pacer-step"><button data-k="reps" data-d="-1">&minus;</button><output id="pcOreps">8</output><button data-k="reps" data-d="1">+</button></div></div>
       <div class="pacer-row"><label>Descanso</label>
         <div class="pacer-step"><button data-k="rest" data-d="-15">&minus;</button><output id="pcOrest">90s</output><button data-k="rest" data-d="15">+</button></div></div>
-      <p class="pacer-note">A bolinha anda em velocidade constante — é isso que define o HSR. Acelerar no fim da fase lenta descaracteriza o protocolo. A tela fica acesa enquanto a série roda.</p>
+      <p class="pacer-note">A bolinha anda em velocidade constante — é isso que define o HSR. Acelerar no fim da fase lenta descaracteriza o protocolo.<br><br>O descanso continua contando com o pacer fechado: a faixa no topo da página mostra o tempo e reabre com um toque. Se estourar, ela conta pra cima em verde. Já a série em andamento pausa quando você fecha.</p>
     </div>
   </div>
 </div>
@@ -376,54 +410,43 @@ select:focus{outline:none;border-color:var(--accent)}
 // ===================== PRESCRIÇÃO =====================
 // type: "check" (sem carga, apenas feito/não feito) | "sets" (uma linha por série)
 const BLOCKS = [
-{letter:"A", title:"Ativação / Aquecimento", time:"~5 min",
- note:"Circuito único · 2 passadas · sem descanso entre exercícios, 30seg entre passadas. Marque cada exercício ao concluir.",
+{letter:"A", title:"Ativação / Aquecimento", time:"~3 min",
+ note:"Circuito enxuto · 3 exercícios · 2 passadas · sem descanso entre exercícios, 30seg entre passadas. Marque cada um ao concluir.",
  items:[
   {id:"ponte",num:"A1",name:"Ponte isométrica unilateral",tag:"Glúteo / Pelve",type:"check",
    params:[["Passadas","2"],["Tempo","30seg/lado"],["Carga","Corporal"],["Execução","Isometria"]],
    exec:"Um pé no chão, outra perna elevada. Suba o quadril até alinhar ombro-quadril-joelho e sustente 30seg sem deixar a pelve cair. Glúteo contraído, costelas fechadas.",
    obj:"Ativar glúteo máximo e estabilidade pélvica antes da carga.",
    rest:"Sem descanso — direto para A2."},
-  {id:"abd_pe",tempo:{a:1,pa:0,b:2,pb:0,la:"Abre",lb:"Volta",reps:15,rest:0},num:"A2",name:"Abdução de quadril em pé com band",tag:"Glúteo médio",type:"check",
+  {id:"abd_pe",uni:true,trocaLado:5,tempo:{a:1,pa:0,b:2,pb:0,la:"Abre",lb:"Volta",reps:15,rest:0},num:"A2",name:"Abdução de quadril em pé com band",tag:"Glúteo médio",type:"check",
    params:[["Passadas","2"],["Reps","15/lado"],["Carga","Mini band tornozelos"],["Execução","1s abre · 2s volta"]],
    exec:"Band nos tornozelos. Abra a perna lateralmente sem inclinar o tronco nem rodar o pé pra fora; volte resistindo à banda.",
    obj:"Glúteo médio — estabilizador da pelve no apoio unipodal da corrida.",
    rest:"Sem descanso — direto para A3."},
-  {id:"abd_lat",tempo:{a:1,pa:0,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:0},num:"A3",name:"Abdução em decúbito lateral (star), cotovelo no chão",tag:"Quadril lateral",type:"check",
-   params:[["Passadas","2"],["Reps","12/lado"],["Carga","Corporal"],["Execução","1s sobe · 2s desce"]],
-   exec:"De lado, apoiado no cotovelo, corpo alinhado. Eleve a perna de cima estendida, calcanhar guiando, sem rolar o quadril para trás.",
-   obj:"Glúteo médio/mínimo em cadeia lateral — outro vetor de abdução.",
-   rest:"Sem descanso — direto para A4."},
-  {id:"deadbug",num:"A4",name:"Deadbug com band nos tornozelos + elástico nas mãos",tag:"Core antiextensão",type:"check",
+  {id:"deadbug",tempo:{a:2,pa:0,b:2,pb:0,la:"Estende",lb:"Volta",reps:20,rest:30},num:"A3",name:"Deadbug com band nos tornozelos + elástico nas mãos",tag:"Core antiextensão",type:"check",
    params:[["Passadas","2"],["Reps","10/lado"],["Carga","Band + elástico"],["Execução","Lento · 2–3s"]],
    exec:"Lombar pressionada no chão. Estenda braço e perna opostos sem descolar a lombar; volte e alterne.",
    obj:"Controle lombopélvico sob tensão cruzada — postura nas milhas finais.",
-   rest:"Sem descanso — direto para A5."},
-  {id:"prancha_tap",num:"A5",name:"Prancha com toque no ombro (shoulder tap)",tag:"Core / Antirrotação",type:"check",
-   params:[["Passadas","2"],["Reps","8/lado"],["Carga","Corporal"],["Execução","Lento, sem girar o quadril"]],
-   exec:"Prancha alta, pés na largura do quadril. Toque o ombro oposto com uma mão sem deixar a pelve rodar; alterne. Se estiver fácil, aproxime os pés.",
-   obj:"Antirrotação de tronco sem envolver os isquiotibiais.",
-   rest:"30seg · reinicia o circuito ou encerra na 2ª passada.",
-   warn:"Substituiu a prancha com um pé + band, que gerou dor posterior no joelho em 26/08. Se quiser retomar a versão antiga, faça sem a band."}
+   rest:"30seg · reinicia o circuito ou encerra na 2ª passada."},
  ]},
 {letter:"B", title:"Força posterior — Reabilitação", time:"~19 min",
  note:"Protocolo HSR nos dois primeiros · execução lenta · sentinela: deadlift unilateral. Hip thrust é força pura (glúteo saudável), sem tempo lento.",
  items:[
-  {id:"rdl",tempo:{a:3,pa:1,b:2,pb:0,la:"Desce",lb:"Sobe",reps:12,rest:90},num:"B1",name:"Deadlift unilateral (RDL)",tag:"Semimembranoso",type:"sets",
+  {id:"rdl",grupo:"B1",uni:true,trocaLado:15,tempo:{a:3,pa:1,b:2,pb:0,la:"Desce",lb:"Sobe",reps:12,rest:90},num:"B1",name:"Deadlift unilateral (RDL)",tag:"Semimembranoso",type:"sets",
    sets:[{c:"20kg",r:"12"},{c:"25kg",r:"10"},{c:"30kg",r:"8"},{c:"30kg",r:"8"}],
    params:[["Séries","4 (piramidal)"],["Execução","3s desce · 1s pausa · 2s sobe"],["Descanso","60–90s após as 2 pernas"],["RPE","7–8"]],
    exec:"Quadril como dobradiça: desça em 3seg com coluna neutra até o alongamento no posterior. Pausa 1seg no fundo SEM relaxar, suba em 2seg. Sem quicar.",
    obj:"Exercício central da reabilitação: carga em posição alongada — melhor evidência para remodelação tendínea.",
    rest:"Alterna pernas; após as duas, 60–90seg de pausa real (~2–3min por perna).",
    warn:"SENTINELA — monitorar dor nas 24h. Progressão: 4×8 com 30kg confortável → +2,5kg."},
-  {id:"legcurl",tempo:{a:3,pa:1,b:3,pb:0,la:"Flexiona",lb:"Volta",reps:10,rest:60},num:"B2",name:"Standing leg curl unilateral",tag:"Isquiotibiais",type:"sets",
+  {id:"legcurl",grupo:"B2",uni:true,trocaLado:15,tempo:{a:3,pa:1,b:3,pb:0,la:"Flexiona",lb:"Volta",reps:10,rest:60},num:"B2",name:"Standing leg curl unilateral",tag:"Isquiotibiais",type:"sets",
    sets:[{c:"5kg",r:"8–10"},{c:"5kg",r:"8–10"},{c:"5kg",r:"8–10"}],
    params:[["Séries","3 por perna"],["Execução","3s flexiona · 1s pico · 3s volta"],["Descanso","60s"],["RPE","7–8"]],
    exec:"Tronco estável, sem inclinar pra ajudar. Flexione em 3seg, segure 1–2seg, retorne em 3seg. Evite a flexão terminal completa se puxar na inserção.",
    obj:"Isolamento com quadril neutro — flexão de joelho com mínima compressão na inserção.",
    rest:"Alterna pernas + 60seg entre séries.",
    warn:"Manter 5kg até rodar sem dor; só então progredir."},
-  {id:"hipthrust",tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:60},num:"B3",name:"Hip thrust bilateral",tag:"Glúteo / Força",type:"sets",
+  {id:"hipthrust",grupo:"B3",uni:false,tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:60},num:"B3",name:"Hip thrust bilateral",tag:"Glúteo / Força",type:"sets",
    sets:[{c:"?",r:"12"},{c:"?",r:"10"},{c:"?",r:"10"}],
    params:[["Séries × Reps","3 × 10–12"],["Execução","1s sobe · 1s topo · 2s desce"],["Descanso","60s"],["RPE","7–8"]],
    exec:"Costas apoiadas no banco, barra ou halter sobre o quadril, pés na largura do quadril. Suba até extensão completa, contraia 1seg no topo, desça em 2seg. Queixo levemente para baixo, sem hiperextender a lombar.",
@@ -431,36 +454,35 @@ const BLOCKS = [
    rest:"60seg entre séries.",
    warn:"Definir a carga inicial na próxima sessão: escolha um peso que deixe as últimas 2 reps difíceis. Progressão livre, sem restrição de tendão."}
  ]},
-{letter:"C", title:"Força geral — Super-séries", time:"~18 min",
- note:"C1 no Smith · C2 usa UMA máquina por vez, pareada com exercício de peso corporal ao lado.",
+{letter:"C", title:"Força geral — Super-séries", time:"~20 min",
+ note:"Dois pares. C1 no Smith (agacho + panturrilha) · C2 extensora + panturrilha no chão. O pacer encadeia o par com 15seg de transição e mostra o próximo exercício na tela.",
  items:[
-  {id:"agacho",tempo:{a:2,pa:0,b:1,pb:0,la:"Desce",lb:"Sobe forte",reps:10,rest:0},num:"C1a",name:"Agachamento guiado (Smith)",tag:"Quadríceps / Glúteo",type:"sets",
+  {id:"agacho",grupo:"C1",uni:false,tempo:{a:2,pa:0,b:1,pb:1,la:"Desce",lb:"Sobe forte",reps:10,rest:0},num:"C1a",name:"Agachamento guiado (Smith)",tag:"Quadríceps / Glúteo",type:"sets",
    sets:[{c:"25kg",r:"10"},{c:"30kg",r:"8"},{c:"30kg",r:"8"}],
-   params:[["Séries","3"],["Execução","2s desce · sobe forte"],["Descanso","Direto para C1b"],["RPE","7–8"]],
-   exec:"Pés à frente da barra, tíbia próxima da vertical. Desça em 2seg até profundidade confortável, suba com força — a concêntrica pode ser explosiva.",
+   params:[["Séries","3"],["Execução","2s desce · sobe forte · 1s pausa em cima"],["Descanso","15s → C1b"],["RPE","7–8"]],
+   exec:"Pés à frente da barra, tíbia próxima da vertical. Desça em 2seg até profundidade confortável, suba com força e faça 1seg de pausa em cima antes da próxima. A pausa no topo é descanso, não carga — ela permite manter os 30kg sem virar tensão contínua.",
    obj:"Força de quadríceps/glúteo — proteção contra o dano excêntrico das descidas do CIM.",
-   rest:"Sem descanso — direto para C1b."},
-  {id:"panturrilha",tempo:{a:2,pa:1,b:2,pb:1,la:"Sobe",lb:"Desce",reps:15,rest:120},num:"C1b",name:"Flexão plantar no Smith sobre step",tag:"Panturrilha",type:"sets",
+   rest:"15seg de transição · o pacer emenda no C1b."},
+  {id:"panturrilha",grupo:"C1",uni:false,tempo:{a:2,pa:1,b:2,pb:1,la:"Sobe",lb:"Desce",reps:15,rest:120},num:"C1b",name:"Flexão plantar no Smith sobre step",tag:"Panturrilha",type:"sets",
    sets:[{c:"25kg",r:"15"},{c:"30kg",r:"12"},{c:"30kg",r:"12"}],
-   params:[["Séries","3"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Descanso","2min entre rodadas"],["Amplitude","Completa"]],
+   params:[["Séries","3"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Descanso","2min ao fim do par"],["Amplitude","Completa"]],
    exec:"Antepé no step. Desça o calcanhar ABAIXO do nível do step, pausa 1seg, suba até a ponta máxima, pausa 1seg no topo. Sem quicar no Aquiles.",
    obj:"Sóleo/gastrocnêmio absorvem várias vezes o peso corporal por passada — investimento direto pra maratona.",
    rest:"2min após completar o par C1 · 3 rodadas.",
    warn:"Variação futura: alternar joelho estendido (gastro) e fletido (sóleo) entre semanas."},
-  {id:"extensora",tempo:{a:2,pa:1,b:3,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:60},num:"C2a",name:"Cadeira extensora unilateral + panturrilha no chão",tag:"Quadríceps excêntrico",type:"sets",
+  {id:"extensora",grupo:"C2",uni:true,trocaLado:5,tempo:{a:2,pa:0,b:3,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:60},num:"C2a",name:"Cadeira extensora unilateral",tag:"Quadríceps excêntrico",type:"sets",
    sets:[{c:"20kg",r:"8"},{c:"20kg",r:"8"},{c:"20kg",r:"8"}],
-   params:[["Séries","3 + panturrilha 12–15"],["Execução","1–2s sobe · 1s topo · 3–4s DESCE"],["Descanso","60s"],["RPE","8"]],
-   exec:"Eixo da máquina alinhado ao joelho, rolo acima do tornozelo. Suba forte, pausa 1seg, desça em 3–4seg — o peso não pode cair nos 30° finais. Direto após: panturrilha unilateral no chão, 12–15/lado.",
+   params:[["Séries","3 por perna"],["Execução","2s sobe · 3s DESCE · sem pausa"],["Descanso","15s → C2b"],["RPE","8"]],
+   exec:"Eixo da máquina alinhado ao joelho, rolo acima do tornozelo. Suba em 2seg, desça em 3seg — o peso não pode cair nos 30° finais. Sem pausa no topo: ali o músculo está encurtado e a pausa não acrescenta nada à remodelação, só custa tempo sob tensão.",
    obj:"A excêntrica lenta é a versão de academia da frenagem de quadríceps nas descidas do CIM.",
-   rest:"60seg entre rodadas · 3 rodadas.",
+   rest:"5seg entre pernas · 15seg de transição para o C2b.",
    warn:"Progressão: manter 20kg até 3×12 com a mesma qualidade de descida → subir carga e voltar pra 8."},
-  {id:"adutora",tempo:{a:1,pa:0,b:3,pb:0,la:"Fecha",lb:"Abre",reps:12,rest:60},num:"C2b",name:"Cadeira adutora + prancha lateral",tag:"Adutores / Core lateral",type:"sets",
-   sets:[{c:"50kg",r:"12"},{c:"50kg",r:"12"},{c:"50kg",r:"12"}],
-   params:[["Séries","3 + prancha lateral 20–30s"],["Execução","1s fecha · 2–3s abre"],["Descanso","60s"],["RPE","7"]],
-   exec:"Feche em 1seg, abra resistindo em 2–3seg. Direto após: prancha lateral 20–30seg por lado, quadril elevado.",
-   obj:"Adutores subtreinados em corredores — prevenção de virilha. Prepara o padrão do Copenhagen.",
-   rest:"60seg entre rodadas · 3 rodadas.",
-   warn:"Até ~06/09 — depois substituir por Copenhagen curto 2×6–8/lado."}
+  {id:"pantchao",grupo:"C2",uni:true,trocaLado:5,tempo:{a:2,pa:1,b:2,pb:1,la:"Sobe",lb:"Desce",reps:15,rest:60},num:"C2b",name:"Panturrilha unilateral no chão",tag:"Panturrilha / Unipodal",type:"sets",
+   sets:[{c:"corporal",r:"12–15"},{c:"corporal",r:"12–15"},{c:"corporal",r:"12–15"}],
+   params:[["Séries","3 por perna"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Descanso","60s ao fim do par"],["Carga","Corporal ou halter"]],
+   exec:"Em pé numa perna, mão na parede só para equilíbrio. Suba até a ponta máxima, pausa 1seg no topo, desça em 2seg e pausa 1seg embaixo. Se ficar fácil, segure um halter do mesmo lado.",
+   obj:"Corrida é sempre apoio unipodal — o Smith cobre a força bilateral, aqui cobre o controle de uma perna só.",
+   rest:"5seg entre pernas · 60seg após completar a rodada C2."}
  ]}
 ];
 const EX = {};
@@ -733,7 +755,7 @@ document.getElementById("repCopy").addEventListener("click",()=>{
     });
     t+="\n";
   });
-  t+="Prescrição atual: A ativação (5 exerc., 2 passadas) · B1 RDL uni 20/25/30/30×12/10/8/8 (3-1-2) · B2 leg curl uni 3×8-10 5kg (3-1-3) · B3 hip thrust bilateral 3×10-12 · C1 agacho+panturrilha Smith 3 rodadas · C2a extensora uni 3×8 20kg (excêntrica 3-4s) · C2b adutora 3×12 50kg\n";
+  t+="Prescrição atual (rev. 03/09): A ativação enxuta (3 exerc., 2 passadas) · B1 RDL uni 20/25/30/30×12/10/8/8 (3-1-2) · B2 leg curl uni 3×8-10 5kg (3-1-3) · B3 hip thrust bilateral 3×10-12 · C1 agacho Smith (2s desce, sobe forte, 1s topo) + panturrilha Smith · C2 extensora uni 3×8 20kg (2s sobe, 3s desce, SEM pausa no topo) + panturrilha uni no chão 3×12-15. Adutora/prancha lateral saíram; adutor virou Copenhagen nos dias de superiores.\n";
   navigator.clipboard.writeText(t).then(()=>{
     const f=document.getElementById("copiedFlag");
     f.classList.add("show"); setTimeout(()=>f.classList.remove("show"),1800);
@@ -770,41 +792,131 @@ document.getElementById("fileImport").addEventListener("change",e=>{
   rd.readAsText(file);
 });
 
-// ===================== PACER DE TEMPO =====================
+// ===================== ÁUDIO EMBUTIDO =====================
+// Elemento <audio> com WAV embutido: no iPhone ele sobe para a categoria de
+// playback e IGNORA o interruptor de silencioso, ao contrário do WebAudio.
+const BEEP_SRC="data:audio/wav;base64,UklGRhYTAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YfISAAAAANUAfgJ9A2oD+gKTAqQBuP9i/Vb76fjj9FLwe+9U9psDiRBrFnMUUg9bC2cI5gOE/Zn3EfNF7UPkktyt33ry8g1zI1UpbyLBGDUSnAz7A1X5ovDC6c/fztFyyYfUuvX0Hdg3ITpvLS8gsRcED9wBffO86DrfUtASvlO4Q88AADYyE0wXSLc1CybUG20Po/1W7APgMtPEvuipqqrD0LsQFUm8XuNStjuqKn0esg2J9zjky9aJxvCtzprBpt7bGST7WLFkflH0OMIofBt0CDHy9eAi1P3BC6mWm7mx5O2wM2VeS2DKSUMzByUIF80Cfu0y3jLREL39pK2e474AAPtA8GB4WmdCVy5nIUASP/1h6bTb2s31tyyiNaTXzYoRqkvfYLlTljsRKrYdMQ3x99rlTtkJyvCy+aAxrBHe5iGPU45eh0x7NUYmzxnwBwjz2eLO1sTFV660oX62/u6JMKRYbVpLRSQwxiKgFaECn+5B4AzUJMGIqpuk28IAAAY9CFv1VFw+hCteHyQRav3C6urd6NBZvOOnzanl0HkQDkf4Wp9O9TeBJ+YbYwxv+HLnqdtTzaK3w6ZMsSLg1R94TsxY3Uc5MvEjPRh1B9LzoORR2VDJUbNzp/m6CPCULT5T61QSQTUtpyBPFHgCru8w4rnW+cS9ryyqlMYAAE45fFXIT4863ih1HRgQkv0N7P7fxtN4wEKtDa/E03gPukJtVdVJjDQZJTMaogvl+PHo4N1p0Au8M6wXthPi5R2wSWNTfEMqL8EhwxYAB5D0S+as26XM/bfYrC2/AfHOKixOv08cPXQqqh4SE1ECrPAB5D3ZkcihtGevFMoAANA1R1DsSv42YCaqGx0PuP1F7fHheNZXxEyy/LN21ocOqT45UFVFWDHWIpsY7ApU+Vnq9N9P0y/ATrGYuubjExwzRU5OYD9KLLIfYBWTBkP13Ofj3cbPYLzpsSDD6/EyKGhJ40pjOd4nzBzpES0Cm/G25Zrb8ss5uVC0Xc0AAIkyY0tbRqQzCiT6GTEO3P1p7sbjANn5xwi3nbj+2KQN2DpWSxxBVy63IBsXQgq8+arr6OEI1hLEGbbTvpzlXRr8QIlJgzuXKcQdEhQtBur1VOn337bSf8CrttbGxvK/JfBEU0bkNXAlCxvREAsCfPJQ59LdHs+Ivey4c9AAAHUvy0YSQn8w2CFlGFQN/f17737lYNtjy3q797xe288MQje/RiU9hCu5HrIVogkd+ujsveOX2LnHmrrLwjjnwhgGPQ5F4zcPJ/Qb2RLMBYj2turq4XnVXcQju1HKlfNyI7xACkKbMigjZRnLD+sBT/PR6OffGNKVwUG9WNMAAJEse0IMPootyB/pFoQMHP598Bznm92Yzqe/DMGZ3QcM5DNvQms53SjZHGAUDAl5+hHuduX+2ibL1L6GxrvoPxdOOdlAezSuJEAasxFyBRv3AuzA4xDY/8dVv5fNVvRJIcs8BD6GLwQh2RfVDs0BFfQ66tvh5NRjxVLBEdYAANopbj5EOsQq2B2DFcELOv5v8aDotN+a0ZLD4sSy30wLuzBjPus1YCYXGyITfwjP+invFOc/3V/OzMIGyibq1RXRNeY8STFyIqYYnxAdBab3Ou145X/aactFw6nQDPVCHxc5PTqhLAEfZRbtDbEBz/SO67Hjhdf1yCPFn9gAAE0noTq3NikoBxw0FAoLVv5S8g3qrOFu1EHHfMiq4ZwKwy2WOqIyCSRxGfgR+gcg+zDwmehd32XRh8ZQzXrrgBSJMjA5SC5YICYXnA/NBCj4X+4W58jcnc74xovTt/VbHZw1sTboKR0dBxUUDZcBffXN7Gvl/NlPzLnIBdsAAOgkDjdiM7clURr5El0KcP4n82PrheMV17bK3suD4/YJ+SoEN40v1yHkF98Qfgds+ybxBupa4TzUB8pn0LvsQRN1L7Q1ditgHr0VqQ6CBKP4cu+b6O3en9FyykHWWPaRG1gyXDNbJ1cbvxNIDH4BIfb47QrnTdx1zxjMRt0AAKgiszNAMGojtxjREbwJiP7w86TsQeWU2fXNC88/5VsJWyiqM6csxx9vFtgPCQe0+w7yXes44+bWUc1N0+ftFBKRLG4y0CiGHGoUxA08BBb5dPAI6vHgc9S1zczY7vbjGUcvOzD1JK0ZixKJC2cBu/YS74/oet5r0kHPZN8AAIwgjTBQLUIhNRe7ECQJn/6s9NLt4ubr2wLRB9Lh5skI5iWFMO8p2B0SFeEOmwb3++jyn+z55GfZaNAG1gHv+hDaKVwvVCbJGisT7Qz6A4H5ZvFe69biGtfG0C/bfPdPGGYsSi21IhwYahHVClEBTPca8P3pheAy1TnSYOEAAJAemC2NKjsfyxW2D5UItP5d9e7uauge3t/T1NRo6EAIliOQLWEnBhzJE/kNNAY2/LTzze2f5sHbTtOV2Arw8Q9NJ3ks/iMnGQASJAy8A+f5SvKg7JzkmNmm023dAfjUFrEpiCqXIKQWWxAsCjwB1PcS8VTrcOLN1wPVPuMAALMc0Sr1J1QdeBTBDg8Iyf4D9vjv2uku4I/WddfY6b8HayHJKvokURqUEh8N0wVx/HT06e4q6PfdB9b82gPx+Q7oJMMpzSGfF+cQZguBA0b6IPPO7Ujm79ta1onfffhwFScn8SebHkMVWw+NCSkBU/j78ZbsPeRA2qLX/uQAAPQaNSiGJYsbOBPbDZIH3P6e9vLwM+se4hXZ7dky60YHYh8uKLoitxhzEVIMeAWp/Cj18++e6Qngltg93e3xDw6oIjgnvh8vFuAPtApLA5/66fPq7tnnId7j2IPh8/giFMQkgiW+HPcTbA74CBcBy/jV8sXt7uWN3BfapOYAAE8ZwiU9I90ZDRIDDRwH7v4x993xeOzw43TbP9x27NUGeR27JZwgNRdiEJILIwXd/NH17vD76vzh/Npb38nyNA2MINQkzx3VFOgODQoXA/P6pfT171LpMuBG21/jYfnoEociOSP9GsASiw1sCAYBO/mj8+HuhOe23mfcL+gAAMUXdSMXIUoY8xA4DK0G/v6697ryqO2m5a7dbd6n7WoGrRtvI58eyxVjD94K0wQO/XD22fFD7NDjPt1Y4ZfzZgyQHpYi/huQEwAOcQnnAkL7V/Xv8LPqIuKC3R3lyPnBEWwgEyFYGZsRuAzpB/YApflk9O3vAum94JLeo+kAAFIWTCETH88W6w95C0UGDv87+Inzxu5B58XfeODF7gYG/RlGIcIcdxRzDjQKiAQ8/QX3tvJ37YjlXN8241j0pQu0HHsgSRpfEiUN3Qi6Aoz7/fXa8QDs9OOc38DmKfqsEHMeDx/NF4kQ8QttB+cACPoZ9efwaeql4pvg/+oAAPYURR8vHWsV8g7GCuMFHf+0+Ev00+/D6LzhZOLS76gFaBg/HwEbOBORDZUJQQRn/ZH3hfOY7iXnWeH35A717wr0GoAerxhAEVgMUwiPAtH7mfa38jjtqeWV4UrohPqoD5gcKx1aFocPNwv6BtkAZfrD9dPxuutv5IXiR+wAAK8TXR1nGx0UCQ4eCocFK/8m+QL1z/Au6pTjMuTO8FAF6xZYHVwZDBK+DAAJ/wOP/RX4SPSo76joN+Od5rn1RApPGaQcLhczEJgL0QdnAhP8LPeG81zuROdw47zp2vq0DtoaZBv9FJUOiAqNBswAvfpi9rDy9uwd5lHke+0AAHwSkxu8GeMSLg2ACTEFOP+R+a31vPGC60/l5OW78f0EhhWOG9EX8xD3C3MIwAO1/ZD4/vSn8BTq+OQp6Fn2pAnFF+YaxBU2D+MKVwdCAlD8tfdI9HDvxugt5RfrKvvODTcZuRm2E7EN5AknBr8AD/v49oDzH+6w5wHmnO4AAFwR5RkrGL0RYQzsCOAERP/1+U72m/LC7PDme+ea8q8ENhTgGV0W6g88C+8HhgPZ/QT5qvWW8Wrrnuad6fD2DglSFkIZcRRJDjkK5QYfAor8N/j/9HLwMOrQ5l3sdfv3DK4XKBiCEtwMSgnHBbMAXPuF90P0Nu8r6Zbnq+8AAE0QURiyFqgQoAthCJQET/9U+uX2bPPu7Xfo+ehr82YE+xJNGAAV8g6NCnQHTwP7/XH5S/Z38qvsKuj66n33gQj2FLgXMhNqDZoJeQb9AcD8sPir9WXxhOtZ6JDtvPstDDwWrxZiERMMuQhsBagApPsK+Pr0PPCQ6hPpqvAAAE8P1hZQFaQP6greB0wEWv+s+nP3MPQI7+bpYeov9CEE0xHSFrkTCQ7pCf8GGwMa/tf54/ZK89ntnelC7AL4/AevE0YWBxKZDAQJFAbeAfL8IvlM9kjyxOzK6a/u//tvC+EUTRVTEFcLMQgYBZ4A6PuG+Kb1MvHe63jqmfEAAGAOchUDFLAOQApjBwkEZP//+vn36PQQ8D/rsuvo9OEDvRBuFYUSLg1OCZIG6wI4/jj6cfcQ9PTu++p27X/4fwd8EusU7hDUC3cItQXBASL9jfnj9h7z8O0k673vPfy8CpwTARRUD6YKsQfIBJUAKPz6+Ef2GfIY7cjrevIAAIANIxTLEssNoAnwBsoDbv9N+3b4lfUJ8YLs7+yV9aQDuA8gFGQRYQy9CCwGvQJU/pL69vfK9P7vQuyX7vT4CgdcEaQT5g8cC/MHXAWmAU/98vly9+fzCe9p7LvwePwVCmoSyRJlDgAKOQd+BIsAZPxo+d/28fI/7gTtTPMAAK0M6RKmEfQMCgmEBo8Dd/+X++z4OPby8bLtGO439mwDww7mElUQnws1CMsFkgJu/uf6dPh59fjwdu2n72L5nQZNEHIS7g5vCncHCQWMAXn9UPr396T0EvCb7anxr/x4CUsRpBGEDWQJyAY4BIMAnPzP+W33vfNU7yzuE/QAAOcLwhGTECoMfQgeBlgDf//c+1r50PbO8tDuL+/Q9jYD3A2/EVYP6gq1B3EFagKG/jb76vgd9uLxl+6m8Mn5NQZPD1IRBQ7MCQMHugR0AaD9qfp0+FX1C/G67ony4/zkCD0QkRCyDNEIXgb2A3sA0fwv+vP3fPRY8ELvzfQAAC4LrRCQD2wL+Qe/BSMDh/8c/ML5YPeb89zvNvBf9wQDBA2qEGcOQAo8BxwFRQKd/oH7WPm49r7yp++V8Sr61QVgDkQQKg0zCZUGcARdAcX9/Prq+Pz19PHH71vzE/1ZCEAPjg/sC0gI+wW4A3MAA/2K+nH4MPVM8Ufwe/UAAH8KqQ+dDroKfAdlBfICjv9Z/CP65vdd9NjwLPHm99UCOQymD4YNoAnLBswEIQKz/sf7wPlI943zpvB28oX6egWADUYPXQykCC8GKwRIAej9S/tZ+Zj2z/LE8CD0Qf3XB1IOnA4yC8cHngV+A2wAMv3f+uf42fUx8jzxH/YAANwJtQ65DRMKBwcRBcQClf+S/H/6ZfgS9cTxE/Jk+KkCeguyDrMMCglhBoIEAALH/gn8IfrQ90/0lfFJ89r6JAWtDFgOnAsdCM4F6gM0AQn+lPvA+Sv3nfOy8dn0bP1dB3INuA2DCk0HRgVIA2YAXf0v+1X5d/YJ8yPyuvYAAEIJzw3jDHYJmgbCBJkCnP/H/NX62/i99aLy7PLb+H8CxwrNDe0LfQj+BTsE4QHa/kf8ffpQ+Ab1dvIQ9Cv71ATnC3gN5wqeB3QFrQMhASf+2fsi+rT3XvSR8of1lP3qBqEM4gzfCdsG9AQUA18Ahv16+735DPfT8/vySvcAALEI+AwaDOIIMwZ4BHECov/6/CX7S/ld9nPzuPNK+VgCHwr2DDML+AegBfkDwwHs/oH80/rI+LH1SfPK9Hb7iQQuC6YMPQonBx8FdAMQAUT+Gvx9+jb4E/Vj8yv2uv1+BtwLGQxFCXAGpwTkAloArf3B+x/6l/eR9Mbz0vcAACoILgxeC1cI0gUyBEsCqP8p/XH7s/nz9jb0ePSz+TQCgQkrDIUKfAdJBbsDqAH9/rf8JPs5+VL2EPR59b37QgR/CuELnQm4Bs8EPgP/AF/+V/zT+q/4vvUn9MT23f0ZBiMLXAu0CAwGXgS3AlQA0f0D/Hv6G/hD9YX0UvgAAKoHcAusCtUHdwXxAycCrf9V/bj7FvqA9+70LPUV+hEC7QhuC+AJBwf2BIEDjgEN/+v8cPui+en2yvQd9v/7AATcCSgLBwlPBoQECwPvAHn+kPwk+yH5Xvbg9FT3//26BXUKqwotCK4FGgSNAk8A8/1C/NH6lvjr9Tj1yvgAADMHvQoGClsHIgWzAwUCsv9//fv7cvoF+Jv11fVy+vEBYgi7CkYJmgapBEoDdgEc/xv9t/sG+nf3efW39j78wQNCCXoKegjtBT0E3ALhAJH+xvxw+4359PaO9dv3Hv5gBdIJBQqtB1UF2gNlAkoAE/58/CL7CfmI9uD1OvkAAMMGFgppCegG0gR5A+YBt/+m/Tr8yfqB+D32c/bI+tMB3wcUCrYIMwZgBBcDXwEq/0j9+vtj+vz3HfZI9w==";
+const KEEP_SRC="data:audio/wav;base64,UklGRqQHAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YYAHAAD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQA=";
+
+// ===================== PACER DE TEMPO v2 =====================
+/* Máquina de estados:
+   idle → prep(3s) → work → [trans(troca de lado / próximo exercício)] → work
+        → rest(descanso longo, roda com o pacer fechado) → confirm → prep → …
+   Auto-avança ao bater o alvo de reps, com janela de 5s para voltar e continuar.
+   Botão "encerrar série" decide o destino sozinho conforme onde você está. */
 const Pacer = (function(){
   const $=id=>document.getElementById(id);
   const ov=$("ovPacer"), cv=$("pacerCv"), ctx=cv.getContext("2d");
-  const LIM={a:[1,10],pa:[0,6],b:[1,10],pb:[0,6],reps:[1,30],rest:[0,300]};
+  const LIM={a:[1,10],pa:[0,6],b:[1,10],pb:[0,6],reps:[1,40],rest:[0,300]};
   const CSS=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const LS_PACER="tp-pacer-v2";
 
-  let cfg=null, ex=null, modo="idle", t0=0, rep=0, serie=1, raf=null, som=true, wake=null;
+  /* ---------- estado ---------- */
+  let ex=null, membros=[], passos=[], iPasso=0, serie=1, maxSerie=1;
+  let cfg=null, modo="idle", tIni=0, rep=0, alvo=0, alvoLivre=false;
+  let durAtual=0, tutAcc=0, janela=0, decGuard=0;
+  let iv=null, raf=null, som=true, wake=null;
   let faseAnt=-1, segAnt=-1, corA="", corB="", corH="";
-  const ciclo=()=>cfg.a+cfg.pa+cfg.b+cfg.pb;
+  const agora=()=>Date.now()/1000;
+  const ciclo=()=>cfg?cfg.a+cfg.pa+cfg.b+cfg.pb:1;
+  const aberto=()=>ov.classList.contains("open");
+  const passo=()=>passos[iPasso]||null;
 
-  /* --- som --- */
-  let ac=null;
-  function bip(f,d,v){
+  /* ---------- áudio: elemento <audio> vence o silencioso do iPhone ---------- */
+  const POOL=[], NPOOL=5; let iPool=0, destravado=false, keep=null;
+  function initAudio(){
+    for(let i=0;i<NPOOL;i++){
+      const a=new Audio(BEEP_SRC);
+      a.preload="auto"; a.setAttribute("playsinline",""); POOL.push(a);
+    }
+    keep=new Audio(KEEP_SRC); keep.loop=true; keep.volume=.02; keep.setAttribute("playsinline","");
+  }
+  // Safari antigo devolve undefined em vez de Promise — nunca encadear direto
+  function toca(a){ try{ const pr=a.play(); if(pr&&pr.then) pr.catch(()=>{}); return pr; }catch(e){ return null; } }
+  function destrava(){
+    if(destravado) return;
+    destravado=true;
+    POOL.forEach(a=>{
+      a.volume=0;
+      const pr=toca(a);
+      const solta=()=>{ try{ a.pause(); a.currentTime=0; }catch(e){} a.volume=1; };
+      if(pr&&pr.then) pr.then(solta).catch(()=>{a.volume=1;}); else solta();
+    });
+    toca(keep);
+  }
+  function bip(rate,vol){
     if(!som) return;
     try{
-      ac=ac||new (window.AudioContext||window.webkitAudioContext)();
-      if(ac.state==="suspended") ac.resume();
-      const o=ac.createOscillator(), g=ac.createGain();
-      o.type="sine"; o.frequency.value=f;
-      g.gain.setValueAtTime(0,ac.currentTime);
-      g.gain.linearRampToValueAtTime(v,ac.currentTime+.012);
-      g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);
-      o.connect(g); g.connect(ac.destination);
-      o.start(); o.stop(ac.currentTime+d+.02);
+      const a=POOL[iPool]; iPool=(iPool+1)%NPOOL;
+      a.pause(); a.currentTime=0;
+      a.playbackRate=rate||1; a.volume=Math.min(1,vol||1);
+      toca(a);
     }catch(e){}
   }
+  const GRAVE=()=>bip(.62,1), AGUDO=()=>bip(1.5,1), SECO=()=>bip(1.05,.7), ALTO=()=>bip(1.9,1);
+  function fanfarra(){ ALTO(); setTimeout(()=>bip(1.5,1),150); setTimeout(()=>bip(2.2,1),300); }
   const vibra=m=>{ if(navigator.vibrate) navigator.vibrate(m); };
 
-  /* --- tela acesa --- */
+  /* ---------- tela acesa ---------- */
   async function acordar(){ try{ if("wakeLock" in navigator) wake=await navigator.wakeLock.request("screen"); }catch(e){} }
   function liberar(){ try{ wake&&wake.release(); wake=null; }catch(e){} }
-  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&modo==="work") acordar(); });
+  document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState!=="visible") return;
+    if(keep&&keep.paused&&destravado) toca(keep);
+    if(modo==="work") acordar();
+    pinta();
+  });
 
-  /* --- amostragem do ciclo: y 0=início, 1=fim da fase 1 --- */
+  /* ---------- reps por série (lê a pirâmide do card) ---------- */
+  function repsDe(m,n){
+    if(m.type==="sets"&&m.sets&&m.sets[n-1]){
+      const nums=(m.sets[n-1].r||"").match(/\d+/g);
+      if(nums&&nums.length) return +nums[nums.length-1];
+    }
+    return (m.tempo&&m.tempo.reps)||10;
+  }
+  function cargaDe(m,n){
+    const f=fields[m.id];
+    if(f&&f.sets&&f.sets[n-1]&&f.sets[n-1].c) return f.sets[n-1].c;
+    if(m.type==="sets"&&m.sets&&m.sets[n-1]) return m.sets[n-1].c;
+    return "";
+  }
+  const nSeries=m=>(m.type==="sets"&&m.sets)?m.sets.length:2;
+
+  /* ---------- monta a rodada ---------- */
+  function montaRodada(n){
+    const ps=[];
+    membros.forEach((m,mi)=>{
+      if(m.uni){
+        ps.push({t:"set",ex:m,lado:"e",reps:repsDe(m,n)});
+        ps.push({t:"trans",dur:m.trocaLado||15,txt:"Troca de perna",ex:m,lado:"d"});
+        ps.push({t:"set",ex:m,lado:"d",reps:repsDe(m,n)});
+      } else {
+        ps.push({t:"set",ex:m,reps:repsDe(m,n)});
+      }
+      if(mi<membros.length-1){
+        const nx=membros[mi+1];
+        ps.push({t:"trans",dur:15,txt:"Próximo exercício",ex:nx,lado:nx.uni?"e":null});
+      }
+    });
+    const ult=membros[membros.length-1];
+    const desc=(cfgDe(ult).rest)||0;
+    if(desc>0) ps.push({t:"rest",dur:desc});
+    return ps;
+  }
+  function cfgDe(m){
+    const salvo=(JSON.parse(localStorage.getItem(LS_PACER)||"{}"))[m.id]||{};
+    return Object.assign({},m.tempo,salvo);
+  }
+  function salvaCfg(){
+    if(!cfg||!passo()||!passo().ex) return;
+    const id=passo().ex.id;
+    const all=JSON.parse(localStorage.getItem(LS_PACER)||"{}");
+    all[id]={a:cfg.a,pa:cfg.pa,b:cfg.b,pb:cfg.pb,reps:cfg.reps,rest:cfg.rest};
+    localStorage.setItem(LS_PACER,JSON.stringify(all));
+  }
+
+  /* ---------- amostragem do ciclo ---------- */
   function amostra(t){
     let x=t;
     if(x<cfg.a)  return {i:0,rest:cfg.a-x, y:x/cfg.a};
@@ -817,8 +929,13 @@ const Pacer = (function(){
   }
   const faseNome=i=>[cfg.la,"Segura",cfg.lb,"Segura"][i];
   const faseCor =i=>[corA,corH,corB,corH][i];
+  const ladoTxt=l=>l==="e"?"esquerda":l==="d"?"direita":"";
+  function tituloPasso(){
+    const p=passo(); if(!p||!p.ex) return "";
+    return p.ex.num+(p.lado?" · "+ladoTxt(p.lado):"")+" · "+p.ex.name;
+  }
 
-  /* --- canvas --- */
+  /* ---------- canvas ---------- */
   let W=0,H=0;
   function fit(){
     const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
@@ -829,7 +946,8 @@ const Pacer = (function(){
   window.addEventListener("resize",()=>{ fit(); if(modo!=="work") desenha(null); });
 
   function desenha(t){
-    if(!W) fit();
+    if(!cfg) return;
+    if(!W) fit(); if(!W) return;
     ctx.clearRect(0,0,W,H);
     const padX=14,padY=20,w=W-padX*2,h=H-padY*2,C=ciclo();
     const px=s=>padX+(s/C)*w, py=y=>padY+y*h;
@@ -837,160 +955,318 @@ const Pacer = (function(){
     ctx.strokeStyle="rgba(27,30,36,.10)"; ctx.lineWidth=1;
     [0,1].forEach(y=>{ ctx.beginPath(); ctx.moveTo(padX,py(y)); ctx.lineTo(padX+w,py(y)); ctx.stroke(); });
     ctx.strokeStyle="rgba(27,30,36,.16)";
-    for(let s=1;s<C;s++){ const x=px(s); ctx.beginPath(); ctx.moveTo(x,py(0)-5); ctx.lineTo(x,py(0)+3); ctx.stroke(); }
+    for(let k=1;k<C;k++){ const x=px(k); ctx.beginPath(); ctx.moveTo(x,py(0)-5); ctx.lineTo(x,py(0)+3); ctx.stroke(); }
 
     const pts=[[0,0],[cfg.a,1],[cfg.a+cfg.pa,1],[cfg.a+cfg.pa+cfg.b,0],[C,0]];
     ctx.beginPath(); ctx.moveTo(px(pts[0][0]),py(pts[0][1]));
-    pts.slice(1).forEach(p=>ctx.lineTo(px(p[0]),py(p[1])));
+    pts.slice(1).forEach(q=>ctx.lineTo(px(q[0]),py(q[1])));
     ctx.strokeStyle=CSS("--line"); ctx.lineWidth=3; ctx.lineJoin="round"; ctx.lineCap="round"; ctx.stroke();
 
-    if(t===null) return;
+    if(t===null||t===undefined) return;
     const a=amostra(t), c=faseCor(a.i);
-
     ctx.beginPath(); ctx.moveTo(px(0),py(0));
-    for(let s=0;s<=t;s+=.02) ctx.lineTo(px(s),py(amostra(s).y));
+    for(let k=0;k<=t;k+=.02) ctx.lineTo(px(k),py(amostra(k).y));
     ctx.strokeStyle=c; ctx.lineWidth=3; ctx.stroke();
-
     ctx.beginPath(); ctx.moveTo(px(t),padY-8); ctx.lineTo(px(t),padY+h+8);
     ctx.strokeStyle="rgba(27,30,36,.18)"; ctx.lineWidth=1; ctx.stroke();
-
-    const bx=px(t), by=py(a.y), k=(a.i===1||a.i===3)?1+Math.sin(t*9)*.07:1;
-    ctx.beginPath(); ctx.arc(bx,by,13*k,0,7); ctx.fillStyle="rgba(27,30,36,.09)"; ctx.fill();
-    ctx.beginPath(); ctx.arc(bx,by,8.5*k,0,7); ctx.fillStyle=c; ctx.fill();
-    ctx.beginPath(); ctx.arc(bx,by,8.5*k,0,7); ctx.strokeStyle="#fff"; ctx.lineWidth=2.5; ctx.stroke();
+    const bx=px(t), by=py(a.y), k2=(a.i===1||a.i===3)?1+Math.sin(t*9)*.07:1;
+    ctx.beginPath(); ctx.arc(bx,by,13*k2,0,7); ctx.fillStyle="rgba(27,30,36,.09)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(bx,by,8.5*k2,0,7); ctx.fillStyle=c; ctx.fill();
+    ctx.beginPath(); ctx.arc(bx,by,8.5*k2,0,7); ctx.strokeStyle="#fff"; ctx.lineWidth=2.5; ctx.stroke();
   }
+  function loopCanvas(){
+    if(!aberto()){ raf=null; return; }
+    if(modo==="work"&&cfg){ const dec=agora()-tIni; desenha(dec-Math.floor(dec/ciclo())*ciclo()); }
+    raf=requestAnimationFrame(loopCanvas);
+  }
+  function ligaCanvas(){ if(!raf) raf=requestAnimationFrame(loopCanvas); }
 
-  /* --- loop --- */
-  function loop(){
-    const dec=(performance.now()-t0)/1000;
+  /* ---------- motor: setInterval sobrevive melhor em background que rAF ---------- */
+  function ligaMotor(){ if(!iv) iv=setInterval(tick,100); }
+  function desligaMotor(){ if(iv){ clearInterval(iv); iv=null; } }
+
+  function tick(){
+    const dec=agora()-tIni;
 
     if(modo==="prep"){
       const r=3-dec;
-      if(r<=0){ modo="work"; t0=performance.now(); faseAnt=-1; bip(880,.16,.22); raf=requestAnimationFrame(loop); return; }
-      $("pcFase").textContent="Prepara"; $("pcFase").style.color=CSS("--steel");
-      $("pcCount").textContent=Math.ceil(r);
-      const s=Math.ceil(r); if(s!==segAnt){ segAnt=s; bip(520,.09,.14); }
-      desenha(null);
+      if(r<=0){ entraWork(); return; }
+      const k=Math.ceil(r); if(k!==segAnt){ segAnt=k; SECO(); }
     }
     else if(modo==="work"){
       const C=ciclo();
       rep=Math.floor(dec/C);
-      if(rep>=cfg.reps){ fimSerie(); return; }
+      if(!alvoLivre&&rep>=alvo){ decGuard=dec; concluiSet(true); return; }
       const t=dec-rep*C, a=amostra(t);
       if(a.i!==faseAnt){
         faseAnt=a.i;
-        if(a.i===0) bip(392,.13,.2);
-        else if(a.i===2) bip(659,.13,.2);
-        else { bip(523,.07,.14); vibra(28); }
+        if(a.i===0) GRAVE(); else if(a.i===2) AGUDO(); else { SECO(); vibra(28); }
       }
-      $("pcFase").textContent=faseNome(a.i); $("pcFase").style.color=faseCor(a.i);
-      $("pcCount").textContent=a.rest.toFixed(1);
-      $("pcRep").textContent=(rep+1)+"/"+cfg.reps;
-      $("pcTut").textContent=Math.floor(dec)+"s";
-      desenha(t);
+    }
+    else if(modo==="trans"){
+      const r=durAtual-dec;
+      if(r<=0){ iPasso++; entraWork(); return; }
+      const k=Math.ceil(r);
+      if(k!==segAnt){ segAnt=k; if(k<=3){ SECO(); vibra(40); } }
     }
     else if(modo==="rest"){
-      const r=cfg.rest-dec;
+      const r=durAtual-dec;
       if(r<=0){
-        modo="idle"; $("pcFase").textContent="Vai"; $("pcFase").style.color=CSS("--ok");
-        $("pcCount").textContent="—"; $("pcGo").textContent="Iniciar série "+serie;
-        bip(880,.3,.22); vibra([90,60,90]); desenha(null); return;
+        modo="confirm"; tIni=agora(); segAnt=-1;
+        fanfarra(); vibra([90,60,90]); pinta(); return;
       }
-      $("pcFase").textContent="Descanso"; $("pcFase").style.color=CSS("--steel");
-      $("pcCount").textContent=Math.floor(r/60)+":"+String(Math.floor(r%60)).padStart(2,"0");
-      const s=Math.ceil(r); if(s!==segAnt){ segAnt=s; if(s<=3) bip(520,.09,.16); }
+      const k=Math.ceil(r);
+      if(k!==segAnt){ segAnt=k; if(k<=3) SECO(); }
+    }
+    pinta();
+  }
+
+  /* ---------- transições de estado ---------- */
+  function entraWork(){
+    const p=passo();
+    if(!p){ fimRodada(); return; }
+    if(p.t==="trans"){ modo="trans"; durAtual=p.dur; tIni=agora(); segAnt=-1; pinta(); return; }
+    if(p.t==="rest"){ modo="rest"; durAtual=p.dur; tIni=agora(); segAnt=-1; liberar(); pinta(); return; }
+    cfg=cfgDe(p.ex); aplicaCores();
+    alvo=p.reps; alvoLivre=false; rep=0; faseAnt=-1;
+    modo="work"; tIni=agora();
+    GRAVE(); acordar(); pinta(); ligaCanvas();
+  }
+
+  function concluiSet(auto){
+    tutAcc+=Math.round((agora()-tIni));
+    if(auto){ ALTO(); vibra([70,50,70]); janela=agora()+5; }
+    else { SECO(); janela=0; }
+    iPasso++;
+    const p=passo();
+    if(!p){ fimRodada(); return; }
+    if(p.t==="trans"){ modo="trans"; durAtual=p.dur; tIni=agora(); segAnt=-1; }
+    else if(p.t==="rest"){ modo="rest"; durAtual=p.dur; tIni=agora(); segAnt=-1; liberar(); }
+    else { entraWork(); return; }
+    pinta();
+  }
+
+  function voltaContinuar(){
+    iPasso--; const p=passo();
+    if(!p||p.t!=="set") { iPasso++; return; }
+    cfg=cfgDe(p.ex); aplicaCores();
+    alvo=p.reps; alvoLivre=true; janela=0;
+    modo="work"; tIni=agora()-decGuard; faseAnt=-1;
+    acordar(); pinta(); ligaCanvas();
+  }
+
+  function fimRodada(){
+    liberar();
+    if(serie>=maxSerie){ modo="fim"; desligaMotor(); fanfarra(); vibra([70,50,70,50,160]); pinta(); return; }
+    modo="confirm"; tIni=agora(); segAnt=-1; fanfarra(); vibra([90,60,90]); pinta();
+  }
+
+  function proximaSerie(){
+    serie++;
+    passos=montaRodada(serie); iPasso=0;
+    modo="prep"; tIni=agora(); segAnt=-1; janela=0;
+    ligaMotor(); pinta(); ligaCanvas();
+  }
+
+  /* ---------- pintura ---------- */
+  function aplicaCores(){
+    corA = cfg.a>=cfg.b ? CSS("--accent") : CSS("--slate");
+    corB = cfg.a>=cfg.b ? CSS("--slate")  : CSS("--accent");
+    corH = CSS("--steel");
+  }
+  const mmss=r=>(r<0?"+":"")+Math.floor(Math.abs(r)/60)+":"+String(Math.floor(Math.abs(r)%60)).padStart(2,"0");
+
+  function pinta(){
+    const dec=agora()-tIni;
+    // ---- badge global (funciona com o pacer fechado) ----
+    const bg=$("restBadge");
+    if(modo==="rest"||modo==="confirm"||modo==="trans"){
+      let txt, num;
+      if(modo==="trans"){ txt=passo()?passo().txt:"Transição"; num=Math.ceil(durAtual-dec)+"s"; }
+      else if(modo==="rest"){ txt="Descanso · "+(membros[0]?membros[0].grupo||membros[0].num:""); num=mmss(durAtual-dec); }
+      else { txt="Pronto para a série "+(serie+1); num=mmss(-dec); }
+      $("rbTxt").textContent=txt; $("rbNum").textContent=num;
+      bg.classList.toggle("over",modo==="confirm");
+      bg.classList.add("show"); document.body.classList.add("badge-on");
+    } else if(modo==="work"||modo==="prep"){
+      $("rbTxt").textContent=tituloPasso()||"Série em andamento";
+      $("rbNum").textContent=(rep+1)+"/"+alvo;
+      bg.classList.remove("over"); bg.classList.toggle("show",!aberto());
+      document.body.classList.toggle("badge-on",!aberto());
+    } else if(modo==="pausa"&&!aberto()){
+      $("rbTxt").textContent="Pausado · "+(tituloPasso()||"série");
+      $("rbNum").textContent="retomar";
+      bg.classList.remove("over"); bg.classList.add("show");
+      document.body.classList.add("badge-on");
+    } else { bg.classList.remove("show"); document.body.classList.remove("badge-on"); }
+
+    if(!aberto()) return;
+
+    // ---- cabeçalho ----
+    $("pcName").textContent=tituloPasso()|| (ex?ex.num+" · "+ex.name:"—");
+    $("pcFormula").textContent=cfg?`${cfg.la} ${cfg.a}s · pausa ${cfg.pa}s · ${cfg.lb} ${cfg.b}s · pausa ${cfg.pb}s`:"—";
+    $("pcSerie").textContent=serie+"/"+maxSerie;
+    $("pcTut").textContent=tutAcc+"s";
+
+    const F=$("pcFase"), N=$("pcCount");
+    const btnFim=$("pcFim"), btnMais=$("pcMais"), btnVolta=$("pcVolta"), btnGo=$("pcGo");
+    btnFim.style.display="none"; btnMais.style.display="none"; btnVolta.style.display="none"; btnGo.style.display="";
+
+    if(modo==="idle"){
+      F.textContent="Pronto"; F.style.color=CSS("--ink");
+      N.textContent=cfg?ciclo().toFixed(1):"—";
+      btnGo.textContent="Iniciar série "+serie;
+      $("pcRep").textContent="0/"+(passos[0]&&passos[0].reps||alvo||0);
       desenha(null);
     }
-    raf=requestAnimationFrame(loop);
-  }
-
-  function fimSerie(){
-    cancelAnimationFrame(raf); liberar();
-    $("pcRep").textContent=cfg.reps+"/"+cfg.reps;
-    $("pcTut").textContent=Math.round(cfg.reps*ciclo())+"s";
-    bip(784,.2,.22); setTimeout(()=>bip(1046,.3,.22),190); vibra([70,50,70,50,140]);
-    serie++; $("pcSerie").textContent=serie;
-    $("pcGo").textContent="Iniciar série "+serie;
-    if(cfg.rest>0){ modo="rest"; t0=performance.now(); segAnt=-1; raf=requestAnimationFrame(loop); }
-    else { modo="idle"; $("pcFase").textContent="Série feita"; $("pcFase").style.color=CSS("--ok"); $("pcCount").textContent="—"; desenha(null); }
-  }
-
-  /* --- controles --- */
-  $("pcGo").addEventListener("click",()=>{
-    if(modo==="work"||modo==="prep"){
-      cancelAnimationFrame(raf); liberar(); modo="idle";
-      $("pcFase").textContent="Pausado"; $("pcFase").style.color=CSS("--steel");
-      $("pcGo").textContent="Retomar série "+serie; desenha(null); return;
+    else if(modo==="prep"){
+      F.textContent="Prepara"; F.style.color=CSS("--steel");
+      N.textContent=Math.max(1,Math.ceil(3-dec));
+      btnGo.textContent="Pausar";
+      $("pcRep").textContent="0/"+(passo()&&passo().reps||alvo);
+      desenha(null);
     }
-    bip(1,.01,.001);
-    modo="prep"; t0=performance.now(); segAnt=-1; rep=0;
-    $("pcRep").textContent="0/"+cfg.reps; $("pcTut").textContent="0s";
-    $("pcGo").textContent="Pausar";
-    acordar(); cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);
+    else if(modo==="work"){
+      const C=ciclo(), t=dec-Math.floor(dec/C)*C, a=amostra(t);
+      F.textContent=faseNome(a.i); F.style.color=faseCor(a.i);
+      N.textContent=a.rest.toFixed(1);
+      $("pcRep").textContent=(rep+1)+"/"+alvo+(alvoLivre?"+":"");
+      btnGo.textContent="Pausar";
+      btnFim.style.display=""; btnFim.textContent="Encerrar série";
+    }
+    else if(modo==="trans"){
+      const p=passo(), r=durAtual-dec;
+      F.textContent=p?p.txt:"Transição"; F.style.color=CSS("--accent");
+      N.textContent=Math.ceil(r);
+      const cg=p&&p.ex?cargaDe(p.ex,serie):"";
+      const prx=passos[iPasso+1];
+      $("pcRep").textContent="0/"+((prx&&prx.reps)||alvo);
+      $("pcProx").textContent=p&&p.ex
+        ? (p.ex.num+(p.lado?" · "+ladoTxt(p.lado):"")+" · "+p.ex.name+(cg?" · "+cg:""))
+        : "";
+      $("pcProx").classList.add("show");
+      btnGo.style.display="none";
+      btnMais.style.display=""; btnFim.style.display=""; btnFim.textContent="Ir agora";
+      if(janela&&agora()<janela) btnVolta.style.display="";
+      desenha(null);
+      return;
+    }
+    else if(modo==="rest"){
+      F.textContent="Descanso"; F.style.color=CSS("--steel");
+      N.textContent=mmss(durAtual-dec);
+      btnGo.style.display="none";
+      btnMais.style.display=""; btnFim.style.display=""; btnFim.textContent="Pular descanso";
+      if(janela&&agora()<janela) btnVolta.style.display="";
+      desenha(null);
+    }
+    else if(modo==="confirm"){
+      F.textContent="Vai"; F.style.color=CSS("--ok");
+      N.textContent=mmss(-dec);
+      btnGo.textContent="Iniciar série "+(serie+1);
+      desenha(null);
+    }
+    else if(modo==="fim"){
+      F.textContent="Exercício feito"; F.style.color=CSS("--ok");
+      N.textContent="—"; btnGo.textContent="Recomeçar";
+      desenha(null);
+    }
+    if(modo!=="trans") $("pcProx").classList.remove("show");
+  }
+
+  /* ---------- controles ---------- */
+  $("pcGo").addEventListener("click",()=>{
+    destrava();
+    if(modo==="work"||modo==="prep"){
+      decGuard=agora()-tIni;
+      modo="pausa"; desligaMotor(); liberar();
+      $("pcFase").textContent="Pausado"; $("pcFase").style.color=CSS("--steel");
+      $("pcGo").textContent="Retomar"; $("restBadge").classList.remove("show");
+      return;
+    }
+    if(modo==="pausa"){ modo="work"; tIni=agora()-decGuard; ligaMotor(); acordar(); ligaCanvas(); pinta(); return; }
+    if(modo==="confirm"){ proximaSerie(); return; }
+    if(modo==="fim"){ serie=0; proximaSerie(); return; }
+    // idle
+    passos=montaRodada(serie); iPasso=0; tutAcc=0;
+    modo="prep"; tIni=agora(); segAnt=-1;
+    ligaMotor(); ligaCanvas(); pinta();
   });
-  $("pcReset").addEventListener("click",()=>{
-    cancelAnimationFrame(raf); liberar(); modo="idle"; rep=0; serie=1;
-    $("pcFase").textContent="Pronto"; $("pcFase").style.color=CSS("--ink");
-    $("pcCount").textContent=ciclo().toFixed(1);
-    $("pcRep").textContent="0/"+cfg.reps; $("pcSerie").textContent="1"; $("pcTut").textContent="0s";
-    $("pcGo").textContent="Iniciar"; desenha(null);
+
+  $("pcFim").addEventListener("click",()=>{
+    destrava();
+    if(modo==="work"){ decGuard=agora()-tIni; concluiSet(false); return; }
+    if(modo==="trans"||modo==="rest"){ iPasso++; if(modo==="trans"){} entraWork(); return; }
   });
-  $("pcSom").addEventListener("click",e=>{ som=!som; e.currentTarget.classList.toggle("on",som); if(som) bip(660,.1,.18); });
+  $("pcMais").addEventListener("click",()=>{ durAtual+=15; segAnt=-1; SECO(); pinta(); });
+  $("pcVolta").addEventListener("click",()=>{ voltaContinuar(); });
+
+  $("pcSom").addEventListener("click",e=>{
+    som=!som; e.currentTarget.classList.toggle("on",som);
+    if(som){ destrava(); AGUDO(); }
+  });
   $("pcCfg").addEventListener("click",e=>{
     e.currentTarget.classList.toggle("on",$("pcCfgBox").classList.toggle("open"));
   });
   $("pcClose").addEventListener("click",fechar);
-  ov.addEventListener("click",e=>{ if(e.target===ov) fechar(); });
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&ov.classList.contains("open")) fechar(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&aberto()) fechar(); });
 
   document.querySelectorAll(".pacer-step button").forEach(b=>{
     b.addEventListener("click",()=>{
+      if(!cfg) return;
       const k=b.dataset.k, d=+b.dataset.d, [lo,hi]=LIM[k];
       cfg[k]=Math.min(hi,Math.max(lo,cfg[k]+d));
-      salvaCfg(); sync(); bip(700,.05,.1);
+      if(k==="reps") alvo=cfg.reps;
+      salvaCfg(); sincCfg(); SECO(); pinta();
     });
   });
-
-  /* --- persistência dos ajustes por exercício --- */
-  const LS_PACER="tp-pacer-v1";
-  function salvaCfg(){
-    if(!ex) return;
-    const all=JSON.parse(localStorage.getItem(LS_PACER)||"{}");
-    all[ex.id]={a:cfg.a,pa:cfg.pa,b:cfg.b,pb:cfg.pb,reps:cfg.reps,rest:cfg.rest};
-    localStorage.setItem(LS_PACER,JSON.stringify(all));
-  }
-
-  function sync(){
+  function sincCfg(){
+    if(!cfg) return;
     $("pcOa").textContent=cfg.a+"s";  $("pcOpa").textContent=cfg.pa+"s";
     $("pcOb").textContent=cfg.b+"s";  $("pcOpb").textContent=cfg.pb+"s";
     $("pcOreps").textContent=cfg.reps;$("pcOrest").textContent=cfg.rest+"s";
-    $("pcLabA").textContent=cfg.la; $("pcLabB").textContent=cfg.lb;
-    $("pcFormula").textContent=`${cfg.la} ${cfg.a}s · pausa ${cfg.pa}s · ${cfg.lb} ${cfg.b}s · pausa ${cfg.pb}s`;
-    $("pcRep").textContent=rep+"/"+cfg.reps;
-    if(modo==="idle"&&$("pcCount").textContent!=="—") $("pcCount").textContent=ciclo().toFixed(1);
-    // fase mais lenta recebe o destaque
-    corA = cfg.a>=cfg.b ? CSS("--accent") : CSS("--slate");
-    corB = cfg.a>=cfg.b ? CSS("--slate")  : CSS("--accent");
-    corH = CSS("--steel");
-    if(modo!=="work") desenha(null);
+    $("pcLabA").textContent=cfg.la;   $("pcLabB").textContent=cfg.lb;
+    aplicaCores();
   }
 
-  function open(exercicio){
-    ex=exercicio;
-    const salvo=(JSON.parse(localStorage.getItem(LS_PACER)||"{}"))[ex.id]||{};
-    cfg=Object.assign({},ex.tempo,salvo);
-    modo="idle"; rep=0; serie=1;
-    $("pcName").textContent=ex.num+" · "+ex.name;
-    $("pcFase").textContent="Pronto"; $("pcFase").style.color=CSS("--ink");
-    $("pcSerie").textContent="1"; $("pcTut").textContent="0s";
-    $("pcGo").textContent="Iniciar";
-    $("pcCfgBox").classList.remove("open"); $("pcCfg").classList.remove("on");
+  /* ---------- badge: toca para reabrir ---------- */
+  $("restBadge").addEventListener("click",()=>{
     ov.classList.add("open");
-    requestAnimationFrame(()=>{ fit(); sync(); $("pcCount").textContent=ciclo().toFixed(1); desenha(null); });
+    requestAnimationFrame(()=>{ fit(); sincCfg(); pinta(); ligaCanvas(); });
+  });
+
+  /* ---------- abrir / fechar ---------- */
+  function open(exercicio){
+    // se já existe sessão rodando deste mesmo grupo, só reabre
+    const mesmoGrupo = ex && (ex.grupo?ex.grupo===exercicio.grupo:ex.id===exercicio.id);
+    if(mesmoGrupo && modo!=="idle" && modo!=="fim"){
+      ov.classList.add("open");
+      requestAnimationFrame(()=>{ fit(); sincCfg(); pinta(); ligaCanvas(); });
+      return;
+    }
+    ex=exercicio;
+    membros = exercicio.grupo
+      ? BLOCKS.flatMap(b=>b.items).filter(x=>x.grupo===exercicio.grupo)
+      : [exercicio];
+    maxSerie = Math.max(...membros.map(nSeries));
+    serie=1; iPasso=0; tutAcc=0; rep=0; janela=0; modo="idle";
+    passos=montaRodada(1);
+    cfg=cfgDe(passos[0].ex); aplicaCores();
+    alvo=passos[0].reps||cfg.reps;
+    if(!POOL.length) initAudio();
+    $("pcCfgBox").classList.remove("open"); $("pcCfg").classList.remove("on");
+    $("pcProx").classList.remove("show");
+    ov.classList.add("open");
+    requestAnimationFrame(()=>{ fit(); sincCfg(); pinta(); desenha(null); ligaCanvas(); });
   }
+
   function fechar(){
-    cancelAnimationFrame(raf); liberar(); modo="idle";
+    // descanso, transição e confirmação continuam rodando; série em andamento pausa
+    if(modo==="work"||modo==="prep"){
+      decGuard=agora()-tIni; modo="pausa"; desligaMotor(); liberar();
+    }
+    if(raf){ cancelAnimationFrame(raf); raf=null; }
     ov.classList.remove("open");
+    pinta();
   }
 
   return {open};
