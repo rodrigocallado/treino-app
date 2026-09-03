@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Treino de Pernas — Rodrigo</title>
+<title>Superiores — Rodrigo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Archivo+Narrow:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
+
 :root{
   --ink:#1B1E24; --slate:#3C4351; --steel:#6B7386;
   --line:#E3E0D9; --paper:#FFFFFF; --wash:#F7F5F1;
@@ -218,6 +219,14 @@ body.badge-on{padding-top:52px}
 .pacer-prox.show{display:block}
 .pacer-actions .btn-ghost.wide{padding:17px 14px;font-size:13px}
 @media print{#restBadge{display:none!important}body.badge-on{padding-top:0}}
+
+/* --- seletor de treino --- */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 0}
+.chips button{background:var(--wash);color:var(--slate);border:1.5px solid var(--line);padding:10px 16px;font-size:12.5px}
+.chips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.eixo{font-size:13px;color:var(--steel);margin-top:10px}
+.firstrun{background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:8px;padding:14px 16px;margin:18px 0;font-size:13.5px;color:#8A3212}
+.firstrun b{display:block;font-family:'Archivo',sans-serif;font-size:14px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -233,28 +242,29 @@ body.badge-on{padding-top:52px}
 <header>
   <div class="head-row">
     <div>
-      <div class="eyebrow">Reabilitação semimembranoso + força · CIM 06/12/2026</div>
-      <h1>Treino de Pernas</h1>
-      <div class="sub">Fase de remodelação tendínea · protocolo HSR no posterior · força geral para maratona net downhill</div>
+      <div class="eyebrow">Membros superiores · 35 min · CIM 06/12/2026</div>
+      <h1 id="tNome">Treino B</h1>
+      <div class="sub" id="tEixo">—</div>
     </div>
     <div class="head-actions">
-      <a class="btn-ghost" href="/rodrigo/superiores.html" style="text-decoration:none;display:inline-block;font-family:Archivo,sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:11px 16px;border:1.5px solid var(--line);background:var(--wash);color:var(--ink)">Superiores</a>
+      <a class="btn-ghost" href="/rodrigo/" style="text-decoration:none;display:inline-block;font-family:Archivo,sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:11px 16px;border:1.5px solid var(--line);background:var(--wash);color:var(--ink)">Pernas</a>
       <button class="btn-ghost" id="btnReport">Relatório</button>
       <button class="btn-ghost" onclick="window.print()">PDF</button>
     </div>
   </div>
 
-  <div class="pain-banner" id="painBanner">
-    <div class="pain-q" id="painQ">Como está o posterior desde o último treino?</div>
-    <div class="pain-scale" id="painScale"></div>
-    <div class="pain-hint">0 = sem dor · 10 = pior dor. A nota fica anexada à sessão correspondente.</div>
-  </div>
+  <div class="chips" id="chips"></div>
 
   <div class="meta">
-    <div><div class="k">Duração alvo</div><div class="v">~42 min <small>· teto de 60</small></div></div>
-    <div><div class="k">Frequência</div><div class="v">1–2x/sem <small>48h antes de corrida intensa</small></div></div>
-    <div><div class="k">Regra de dor</div><div class="v">≤3/10 <small>· basal em 24h</small></div></div>
-    <div><div class="k">Sentinela</div><div class="v">Deadlift uni.</div></div>
+    <div><div class="k">Duração alvo</div><div class="v" id="tDur">~35 min</div></div>
+    <div><div class="k">Falha</div><div class="v">Só isolamento <small>· compostos RIR 2</small></div></div>
+    <div><div class="k">Regra de par</div><div class="v">1 máquina <small>· ou mesma estação</small></div></div>
+    <div><div class="k">Interferência</div><div class="v">Baixa <small>· pode colar na corrida</small></div></div>
+  </div>
+
+  <div class="firstrun" id="firstrun">
+    <b>Primeira sessão: descobrir cargas</b>
+    Sem rest-pause e sem drop set hoje. Anote o peso de cada série mesmo que erre a estimativa — sem esses números as técnicas de intensidade não têm em cima de que trabalhar na semana que vem. Nos compostos pare com 2 reps na reserva.
   </div>
 </header>
 
@@ -267,18 +277,18 @@ body.badge-on{padding-top:52px}
     <div class="countdown-lbl">dias até o CIM · 06 dez 2026</div>
   </div>
   <div class="side-card">
-    <div class="side-h">Progressões planejadas</div>
-    <div class="mile"><span class="date">Feito</span><span>Adutora e prancha lateral saíram. <b>Copenhagen curto</b> 2×6–8/lado migrou para os dias de superiores.</span></div>
-    <div class="mile"><span class="date">~06/09</span><span>Downhill entra na corrida, 1x/sem (alinhar c/ Danilo).</span></div>
-    <div class="mile"><span class="date">12→3 sem</span><span>4–6 sessões de descida antes do taper. Passada curta + cadência alta em declive.</span></div>
-    <div class="mile"><span class="date">−2 sem</span><span>Manter força até aqui, depois reduzir para o taper.</span></div>
-    <div class="mile"><span class="date">Futuro</span><span>Walking lunge substitui agachamento Smith · Nordic só com tendão assintomático.</span></div>
+    <div class="side-h">Como encaixar na semana</div>
+    <div class="mile"><span class="date">Padrão</span><span>2× pernas + <b>A</b> e <b>B</b>.</span></div>
+    <div class="mile"><span class="date">Apertado</span><span>2× pernas + <b>AB</b> só.</span></div>
+    <div class="mile"><span class="date">Agenda</span><span>Superiores quase não interfere na corrida — pode ir no dia seguinte a um treino forte ou no mesmo dia.</span></div>
+    <div class="mile"><span class="date">Dezembro</span><span>Conforme os longões crescerem, superiores é a primeira coisa a ceder. Isso é esperado.</span></div>
   </div>
   <div class="side-card dark">
     <div class="side-h">Regras transversais</div>
-    <div class="rule"><b>Dor:</b> ≤3–4/10 durante · retorno ao basal em 24h. Pior no dia seguinte → −10–20% no deadlift/leg curl.</div>
-    <div class="rule"><b>Unilaterais:</b> esquerda → direita → 60–90seg de pausa real → repete.</div>
-    <div class="rule"><b>Ordem:</b> deadlift antes da flexora — composto sem fadiga.</div>
+    <div class="rule"><b>Falha:</b> só nos isolamentos e no peso corporal. Compostos sempre com 1–2 reps na reserva.</div>
+    <div class="rule"><b>Rotação:</b> giro sai da torácica com o quadril travado. Lombar sob carga e velocidade, nunca.</div>
+    <div class="rule"><b>Remada:</b> apoio no peito, nunca curvada — curvada carrega o semimembranoso em dobradiça.</div>
+    <div class="rule"><b>2ª semana:</b> entram rest-pause nos isolamentos e drop set na última série.</div>
   </div>
   <div class="side-card">
     <div class="side-h">Sessões
@@ -299,17 +309,16 @@ body.badge-on{padding-top:52px}
 
 </div>
 
-<!-- MODAL conclusão -->
 <div class="overlay" id="ovDone">
   <div class="modal">
     <h2 id="doneTitle">Treino concluído</h2>
-    <div class="msub" id="doneSub">Registra a sessão com o que foi preenchido nos exercícios.</div>
+    <div class="msub" id="doneSub">Registra a sessão com o que foi preenchido.</div>
     <div class="field">
       <label>Duração do treino</label>
       <select id="mDur">
         <option value="">Selecione…</option>
-        <option>Até 30 min</option><option>30–45 min</option><option>45–60 min</option>
-        <option>60–75 min</option><option>Mais de 75 min</option>
+        <option>Até 30 min</option><option>30–35 min</option><option>35–45 min</option>
+        <option>45–60 min</option><option>Mais de 60 min</option>
       </select>
     </div>
     <div class="field">
@@ -322,7 +331,7 @@ body.badge-on{padding-top:52px}
     </div>
     <div class="field">
       <label>Observações da sessão</label>
-      <textarea id="mObs" rows="2" placeholder="dor no posterior? energia? sono?"></textarea>
+      <textarea id="mObs" rows="2" placeholder="cargas que erraram, ombro, tempo real..."></textarea>
     </div>
     <div class="modal-actions">
       <button class="btn-ghost" id="mCancel">Cancelar</button>
@@ -331,11 +340,10 @@ body.badge-on{padding-top:52px}
   </div>
 </div>
 
-<!-- MODAL relatório -->
 <div class="overlay" id="ovRep">
   <div class="modal wide">
     <h2>Relatório de evolução</h2>
-    <div class="msub">Baseado nas sessões registradas neste dispositivo.</div>
+    <div class="msub" id="repSub">—</div>
     <div class="rep-controls">
       <button class="btn-ghost" data-w="4">4 semanas</button>
       <button class="btn-ghost" data-w="8">8 semanas</button>
@@ -408,100 +416,259 @@ body.badge-on{padding-top:52px}
 </div>
 
 <script>
-// ===================== PRESCRIÇÃO =====================
-// type: "check" (sem carga, apenas feito/não feito) | "sets" (uma linha por série)
-const BLOCKS = [
-{letter:"A", title:"Ativação / Aquecimento", time:"~3 min",
- note:"Circuito enxuto · 3 exercícios · 2 passadas · sem descanso entre exercícios, 30seg entre passadas. Marque cada um ao concluir.",
- items:[
-  {id:"ponte",num:"A1",name:"Ponte isométrica unilateral",tag:"Glúteo / Pelve",type:"check",
-   params:[["Passadas","2"],["Tempo","30seg/lado"],["Carga","Corporal"],["Execução","Isometria"]],
-   exec:"Um pé no chão, outra perna elevada. Suba o quadril até alinhar ombro-quadril-joelho e sustente 30seg sem deixar a pelve cair. Glúteo contraído, costelas fechadas.",
-   obj:"Ativar glúteo máximo e estabilidade pélvica antes da carga.",
-   rest:"Sem descanso — direto para A2."},
-  {id:"abd_pe",uni:true,trocaLado:5,tempo:{a:1,pa:0,b:2,pb:0,la:"Abre",lb:"Volta",reps:15,rest:0},num:"A2",name:"Abdução de quadril em pé com band",tag:"Glúteo médio",type:"check",
-   params:[["Passadas","2"],["Reps","15/lado"],["Carga","Mini band tornozelos"],["Execução","1s abre · 2s volta"]],
-   exec:"Band nos tornozelos. Abra a perna lateralmente sem inclinar o tronco nem rodar o pé pra fora; volte resistindo à banda.",
-   obj:"Glúteo médio — estabilizador da pelve no apoio unipodal da corrida.",
-   rest:"Sem descanso — direto para A3."},
-  {id:"deadbug",tempo:{a:2,pa:0,b:2,pb:0,la:"Estende",lb:"Volta",reps:20,rest:30},num:"A3",name:"Deadbug com band nos tornozelos + elástico nas mãos",tag:"Core antiextensão",type:"check",
-   params:[["Passadas","2"],["Reps","10/lado"],["Carga","Band + elástico"],["Execução","Lento · 2–3s"]],
-   exec:"Lombar pressionada no chão. Estenda braço e perna opostos sem descolar a lombar; volte e alterne.",
-   obj:"Controle lombopélvico sob tensão cruzada — postura nas milhas finais.",
-   rest:"30seg · reinicia o circuito ou encerra na 2ª passada."},
- ]},
-{letter:"B", title:"Força posterior — Reabilitação", time:"~19 min",
- note:"Protocolo HSR nos dois primeiros · execução lenta · sentinela: deadlift unilateral. Hip thrust é força pura (glúteo saudável), sem tempo lento.",
- items:[
-  {id:"rdl",grupo:"B1",uni:true,trocaLado:15,tempo:{a:3,pa:1,b:2,pb:0,la:"Desce",lb:"Sobe",reps:12,rest:90},num:"B1",name:"Deadlift unilateral (RDL)",tag:"Semimembranoso",type:"sets",
-   sets:[{c:"20kg",r:"12"},{c:"25kg",r:"10"},{c:"30kg",r:"8"},{c:"30kg",r:"8"}],
-   params:[["Séries","4 (piramidal)"],["Execução","3s desce · 1s pausa · 2s sobe"],["Descanso","60–90s após as 2 pernas"],["RPE","7–8"]],
-   exec:"Quadril como dobradiça: desça em 3seg com coluna neutra até o alongamento no posterior. Pausa 1seg no fundo SEM relaxar, suba em 2seg. Sem quicar.",
-   obj:"Exercício central da reabilitação: carga em posição alongada — melhor evidência para remodelação tendínea.",
-   rest:"Alterna pernas; após as duas, 60–90seg de pausa real (~2–3min por perna).",
-   warn:"SENTINELA — monitorar dor nas 24h. Progressão: 4×8 com 30kg confortável → +2,5kg."},
-  {id:"legcurl",grupo:"B2",uni:true,trocaLado:15,tempo:{a:3,pa:1,b:3,pb:0,la:"Flexiona",lb:"Volta",reps:10,rest:60},num:"B2",name:"Standing leg curl unilateral",tag:"Isquiotibiais",type:"sets",
-   sets:[{c:"5kg",r:"8–10"},{c:"5kg",r:"8–10"},{c:"5kg",r:"8–10"}],
-   params:[["Séries","3 por perna"],["Execução","3s flexiona · 1s pico · 3s volta"],["Descanso","60s"],["RPE","7–8"]],
-   exec:"Tronco estável, sem inclinar pra ajudar. Flexione em 3seg, segure 1–2seg, retorne em 3seg. Evite a flexão terminal completa se puxar na inserção.",
-   obj:"Isolamento com quadril neutro — flexão de joelho com mínima compressão na inserção.",
-   rest:"Alterna pernas + 60seg entre séries.",
-   warn:"Manter 5kg até rodar sem dor; só então progredir."},
-  {id:"hipthrust",grupo:"B3",uni:false,tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:60},num:"B3",name:"Hip thrust bilateral",tag:"Glúteo / Força",type:"sets",
-   sets:[{c:"?",r:"12"},{c:"?",r:"10"},{c:"?",r:"10"}],
-   params:[["Séries × Reps","3 × 10–12"],["Execução","1s sobe · 1s topo · 2s desce"],["Descanso","60s"],["RPE","7–8"]],
-   exec:"Costas apoiadas no banco, barra ou halter sobre o quadril, pés na largura do quadril. Suba até extensão completa, contraia 1seg no topo, desça em 2seg. Queixo levemente para baixo, sem hiperextender a lombar.",
-   obj:"Força de extensão de quadril para a corrida. Glúteo é músculo saudável — não precisa de tempo lento nem descanso longo, por isso é bilateral e rápido.",
-   rest:"60seg entre séries.",
-   warn:"Definir a carga inicial na próxima sessão: escolha um peso que deixe as últimas 2 reps difíceis. Progressão livre, sem restrição de tendão."}
- ]},
-{letter:"C", title:"Força geral — Super-séries", time:"~20 min",
- note:"Dois pares. C1 no Smith (agacho + panturrilha) · C2 extensora + panturrilha no chão. O pacer encadeia o par com 15seg de transição e mostra o próximo exercício na tela.",
- items:[
-  {id:"agacho",grupo:"C1",uni:false,tempo:{a:2,pa:0,b:1,pb:1,la:"Desce",lb:"Sobe forte",reps:10,rest:0},num:"C1a",name:"Agachamento guiado (Smith)",tag:"Quadríceps / Glúteo",type:"sets",
-   sets:[{c:"25kg",r:"10"},{c:"30kg",r:"8"},{c:"30kg",r:"8"}],
-   params:[["Séries","3"],["Execução","2s desce · sobe forte · 1s pausa em cima"],["Descanso","15s → C1b"],["RPE","7–8"]],
-   exec:"Pés à frente da barra, tíbia próxima da vertical. Desça em 2seg até profundidade confortável, suba com força e faça 1seg de pausa em cima antes da próxima. A pausa no topo é descanso, não carga — ela permite manter os 30kg sem virar tensão contínua.",
-   obj:"Força de quadríceps/glúteo — proteção contra o dano excêntrico das descidas do CIM.",
-   rest:"15seg de transição · o pacer emenda no C1b."},
-  {id:"panturrilha",grupo:"C1",uni:false,tempo:{a:2,pa:1,b:2,pb:1,la:"Sobe",lb:"Desce",reps:15,rest:120},num:"C1b",name:"Flexão plantar no Smith sobre step",tag:"Panturrilha",type:"sets",
-   sets:[{c:"25kg",r:"15"},{c:"30kg",r:"12"},{c:"30kg",r:"12"}],
-   params:[["Séries","3"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Descanso","2min ao fim do par"],["Amplitude","Completa"]],
-   exec:"Antepé no step. Desça o calcanhar ABAIXO do nível do step, pausa 1seg, suba até a ponta máxima, pausa 1seg no topo. Sem quicar no Aquiles.",
-   obj:"Sóleo/gastrocnêmio absorvem várias vezes o peso corporal por passada — investimento direto pra maratona.",
-   rest:"2min após completar o par C1 · 3 rodadas.",
-   warn:"Variação futura: alternar joelho estendido (gastro) e fletido (sóleo) entre semanas."},
-  {id:"extensora",grupo:"C2",uni:true,trocaLado:5,tempo:{a:2,pa:0,b:3,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:60},num:"C2a",name:"Cadeira extensora unilateral",tag:"Quadríceps excêntrico",type:"sets",
-   sets:[{c:"20kg",r:"8"},{c:"20kg",r:"8"},{c:"20kg",r:"8"}],
-   params:[["Séries","3 por perna"],["Execução","2s sobe · 3s DESCE · sem pausa"],["Descanso","15s → C2b"],["RPE","8"]],
-   exec:"Eixo da máquina alinhado ao joelho, rolo acima do tornozelo. Suba em 2seg, desça em 3seg — o peso não pode cair nos 30° finais. Sem pausa no topo: ali o músculo está encurtado e a pausa não acrescenta nada à remodelação, só custa tempo sob tensão.",
-   obj:"A excêntrica lenta é a versão de academia da frenagem de quadríceps nas descidas do CIM.",
-   rest:"5seg entre pernas · 15seg de transição para o C2b.",
-   warn:"Progressão: manter 20kg até 3×12 com a mesma qualidade de descida → subir carga e voltar pra 8."},
-  {id:"pantchao",grupo:"C2",uni:true,trocaLado:5,tempo:{a:2,pa:1,b:2,pb:1,la:"Sobe",lb:"Desce",reps:15,rest:60},num:"C2b",name:"Panturrilha unilateral no chão",tag:"Panturrilha / Unipodal",type:"sets",
-   sets:[{c:"corporal",r:"12–15"},{c:"corporal",r:"12–15"},{c:"corporal",r:"12–15"}],
-   params:[["Séries","3 por perna"],["Execução","2s sobe · 1s topo · 2s desce · 1s embaixo"],["Descanso","60s ao fim do par"],["Carga","Corporal ou halter"]],
-   exec:"Em pé numa perna, mão na parede só para equilíbrio. Suba até a ponta máxima, pausa 1seg no topo, desça em 2seg e pausa 1seg embaixo. Se ficar fácil, segure um halter do mesmo lado.",
-   obj:"Corrida é sempre apoio unipodal — o Smith cobre a força bilateral, aqui cobre o controle de uma perna só.",
-   rest:"5seg entre pernas · 60seg após completar a rodada C2."}
- ]}
-];
-const EX = {};
-BLOCKS.forEach(b=>b.items.forEach(x=>EX[x.id]=x));
+// ===================== PRESCRIÇÃO — SUPERIORES =====================
+/* Regra de montagem: nenhum par ocupa duas máquinas. Ou é halter/peso corporal,
+   ou é uma estação só, ou são dois exercícios na MESMA polia.
+   Regra de esforço: falha só nos isolamentos e no peso corporal. Compostos em RIR 2. */
 
-// ===================== STORAGE =====================
-const LS_FIELDS="tp-fields-v3", LS_SESS="tp-sessions-v3";
+const PREP = [
+  {id:"pullapart",tempo:{a:1,pa:1,b:2,pb:0,la:"Abre",lb:"Volta",reps:15,rest:0},num:"P1",name:"Band pull-apart",tag:"Escápulas",type:"check",
+   params:[["Passadas","2"],["Reps","15"],["Carga","Elástico longo"],["Execução","1s abre · 1s aperta · 2s volta"]],
+   exec:"Elástico na frente do peito, braços quase estendidos. Abra até o elástico tocar o esterno, junte as escápulas, volte resistindo.",
+   obj:"Acorda trapézio médio e rotadores externos antes de qualquer carga no ombro.",
+   rest:"Sem descanso — direto para P2."},
+  {id:"tora_rot",tempo:{a:2,pa:1,b:2,pb:0,la:"Gira",lb:"Volta",reps:8,rest:0},uni:true,trocaLado:5,num:"P2",name:"Rotação torácica ajoelhado",tag:"Mobilidade",type:"check",
+   params:[["Passadas","2"],["Reps","8/lado"],["Carga","Corporal"],["Execução","2s gira · 1s no fim · 2s volta"]],
+   exec:"Ajoelhado, uma mão na nuca. Gire abrindo o cotovelo para o teto, quadril travado. O giro sai da torácica, não da lombar.",
+   obj:"Amplitude de rotação antes dos rotacionais com carga — e é aqui que você aprende a travar o quadril.",
+   rest:"30seg · reinicia ou segue para o bloco principal."}
+];
+
+const COPEN = {id:"copenhagen",tempo:{a:2,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:45},uni:true,trocaLado:10,num:"F",name:"Copenhagen curto",tag:"Adutores",type:"sets",
+   sets:[{c:"joelho",r:"6–8"},{c:"joelho",r:"6–8"}],
+   params:[["Séries","2 por lado"],["Reps","6–8"],["Carga","Corporal"],["Execução","2s sobe · 1s topo · 2s desce"]],
+   exec:"Antebraço no chão, perna de cima apoiada no banco pelo JOELHO nas primeiras semanas. Suba o quadril até alinhar, sustente 1seg, desça controlado.",
+   obj:"Substitui a cadeira adutora. Adutor fraco é fator de risco de virilha na subida de volume da maratona.",
+   rest:"10seg entre lados · 45seg entre séries.",
+   warn:"Progressão: joelho apoiado → tornozelo apoiado. Só avance quando 2×8 sair sem dor na virilha."};
+
+const ROSCA_MARTELO = {id:"rosca_martelo",tempo:{a:1,pa:0,b:2,pb:0,la:"Sobe",lb:"Desce",reps:10,rest:60},num:"—",name:"Rosca martelo em pé",tag:"Bíceps / Braquial",type:"sets",
+   sets:[{c:"?",r:"10"},{c:"?",r:"10"},{c:"?",r:"10"}],
+   params:[["Séries","3"],["Execução","1s sobe · 2s desce"],["Descanso","60s"],["RPE","8–9"]],
+   exec:"Halteres com pegada neutra, cotovelo colado ao tronco, sem balanço. Suba em 1seg, desça em 2seg.",
+   obj:"Isolamento — pode ir perto da falha sem custo de recuperação.",
+   rest:"60seg entre rodadas.",
+   warn:"A partir da 2ª semana: última rodada em rest-pause (falha, 15seg parado, mini-série, 15seg, mini-série)."};
+
+const ENCOLHIMENTO = {id:"encolhimento",tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:45},num:"—",name:"Encolhimento com halteres",tag:"Trapézio",type:"sets",
+   sets:[{c:"?",r:"12"},{c:"?",r:"12"}],
+   params:[["Séries","2"],["Execução","1s sobe · 1s TOPO · 2s desce"],["Descanso","45s"],["RPE","9"]],
+   exec:"Halteres ao lado do corpo, braços passivos. Suba o ombro reto para cima, pausa de 1seg no topo, desça devagar. A pausa é obrigatória — sem ela vira balanço.",
+   obj:"Trapézio superior. Isolamento, pode ir à falha.",
+   rest:"45seg.",
+   warn:"A partir da 2ª semana: rest-pause em série única no lugar das duas."};
+
+const TRI_CORDA = {id:"tri_corda",tempo:{a:1,pa:0,b:2,pb:0,la:"Estende",lb:"Volta",reps:12,rest:60},num:"—",name:"Tríceps na corda",tag:"Tríceps",type:"sets",
+   sets:[{c:"?",r:"10–12"},{c:"?",r:"10–12"},{c:"?",r:"10–12"}],
+   params:[["Séries","3"],["Execução","1s estende · 2s volta"],["Descanso","60s"],["RPE","8–9"]],
+   exec:"Cotovelo fixo ao lado do tronco, abre a corda no fim do movimento. Mesma estação do exercício anterior — só troca o acessório.",
+   obj:"Isolamento de tríceps. Pode ir à falha.",
+   rest:"60seg entre rodadas.",
+   warn:"A partir da 2ª semana: drop set na última série (tira 30% e vai à falha)."};
+
+const LANDMINE = {id:"landmine",tempo:{a:1,pa:0,b:2,pb:0,la:"Gira",lb:"Volta",reps:8,rest:45},uni:true,trocaLado:5,num:"—",name:"Rotação no landmine",tag:"Core rotacional",type:"sets",
+   sets:[{c:"barra",r:"8"},{c:"barra",r:"8"},{c:"barra",r:"8"}],
+   params:[["Séries","3 por lado"],["Reps","8"],["Carga","Só a barra na 1ª semana"],["Execução","1s gira · 2s volta"]],
+   exec:"Ponta da barra na altura do peito, braços estendidos. Gire de um lado ao outro em arco, QUADRIL TRAVADO de frente. O giro vem da torácica.",
+   obj:"Rotação com carga — força de oblíquo e mobilidade torácica.",
+   rest:"5seg entre lados · 45seg entre séries.",
+   warn:"Girar a lombar sob carga e velocidade é como se arruma problema novo. Se o quadril começar a girar, tire carga."};
+
+const TREINOS = {
+  B:{ nome:"Treino B — Puxar", eixo:"Costas · trapézio · bíceps · core rotacional", tempo:"~35 min",
+    blocks:[
+    {letter:"P", title:"Preparo", time:"~3 min",
+     note:"Circuito · 2 passadas · sem descanso entre os dois. Marque ao concluir.",
+     items:PREP},
+    {letter:"1", title:"Par 1 — barra fixa + polia", time:"~7 min",
+     note:"Barra fixa não ocupa máquina e a polia é uma só. 3 rodadas, 75seg de descanso ao fim do par.",
+     items:[
+      {id:"barra_fixa",grupo:"B1",tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:0},num:"B1a",name:"Barra fixa",tag:"Dorsal / Puxar",type:"sets",
+       sets:[{c:"corporal",r:"8"},{c:"corporal",r:"8"},{c:"corporal",r:"8"}],
+       params:[["Séries","3"],["Execução","1s sobe · 1s topo · 2s desce"],["Descanso","15s → B1b"],["RIR","2 · última 0–1"]],
+       exec:"Pegada pronada na largura dos ombros. Sobe em 1seg, pausa 1seg com o queixo acima da barra, desce em 2seg até braço estendido. Sem balanço.",
+       obj:"Seu melhor puxador — carrega mais que a puxada alta e libera a polia para o par.",
+       rest:"15seg de transição · o pacer emenda no B1b.",
+       warn:"Você faz 13 no fresco, então 8 sai em RIR 4 na 1ª rodada e RIR 1 na 3ª. Progressão é PESO NO CINTO, não mais reps. Falha completa não — ombro e cotovelo acumulam."},
+      {id:"chop_ba",grupo:"B1",tempo:{a:1,pa:0,b:2,pb:0,la:"Puxa",lb:"Volta",reps:10,rest:75},uni:true,trocaLado:5,num:"B1b",name:"Chop na polia, baixa para alta",tag:"Core rotacional",type:"sets",
+       sets:[{c:"?",r:"10"},{c:"?",r:"10"},{c:"?",r:"10"}],
+       params:[["Séries","3 por lado"],["Reps","10"],["Execução","1s puxa · 2s volta"],["Descanso","75s ao fim do par"]],
+       exec:"Polia na posição mais baixa, pés fixos. Puxe diagonalmente do quadril até acima do ombro oposto, braços estendidos. Quadril travado, giro da torácica.",
+       obj:"Rotação com carga no vetor ascendente.",
+       rest:"5seg entre lados · 75seg após completar o par B1."}
+     ]},
+    {letter:"2", title:"Par 2 — remada + halteres", time:"~7 min",
+     note:"Uma máquina e um peso livre. 3 rodadas, 60seg ao fim do par.",
+     items:[
+      {id:"rem_peito",grupo:"B2",tempo:{a:1,pa:1,b:2,pb:0,la:"Puxa",lb:"Volta",reps:10,rest:0},num:"B2a",name:"Remada com apoio no peito",tag:"Dorsal / Trapézio médio",type:"sets",
+       sets:[{c:"?",r:"8–10"},{c:"?",r:"8–10"},{c:"?",r:"8–10"}],
+       params:[["Séries","3"],["Execução","1s puxa · 1s aperta · 2s volta"],["Descanso","15s → B2b"],["RIR","2"]],
+       exec:"Peito apoiado, puxe levando o cotovelo para trás e junte as escápulas. Pausa 1seg no aperto, volte em 2seg até o alongamento.",
+       obj:"Espessura de costas com o tronco apoiado.",
+       rest:"15seg de transição · o pacer emenda no B2b.",
+       warn:"Escolhida no lugar da remada curvada de propósito: curvada põe o semimembranoso em dobradiça isométrica carregada, e hoje não é o dia dele."},
+      Object.assign({},ROSCA_MARTELO,{id:"rosca_martelo",grupo:"B2",num:"B2b",
+       rest:"60seg após completar o par B2.",
+       params:[["Séries","3"],["Execução","1s sobe · 2s desce"],["Descanso","60s ao fim do par"],["RPE","8–9"]],
+       tempo:{a:1,pa:0,b:2,pb:0,la:"Sobe",lb:"Desce",reps:10,rest:60}})
+     ]},
+    {letter:"3", title:"Par 3 — mesma polia", time:"~6 min",
+     note:"Os dois na MESMA estação: só muda a altura e o acessório. 3 rodadas, 45seg ao fim do par.",
+     items:[
+      {id:"rem_uni",grupo:"B3",tempo:{a:1,pa:1,b:2,pb:0,la:"Puxa",lb:"Volta",reps:10,rest:0},uni:true,trocaLado:5,num:"B3a",name:"Remada unilateral na polia, em pé",tag:"Dorsal + antirrotação",type:"sets",
+       sets:[{c:"?",r:"10"},{c:"?",r:"10"},{c:"?",r:"10"}],
+       params:[["Séries","3 por lado"],["Execução","1s puxa · 1s aperta · 2s volta"],["Descanso","5s entre lados"],["RIR","2"]],
+       exec:"Estribo unilateral, polia na altura do abdômen, em pé sem apoio. Puxe sem deixar o tronco girar — resistir à rotação é o exercício de core embutido aqui.",
+       obj:"Dorsal unilateral com antirrotação de graça. Não gasta tempo de core separado.",
+       rest:"5seg entre lados · direto para B3b depois dos dois."},
+      {id:"cruc_inv",grupo:"B3",tempo:{a:1,pa:0,b:2,pb:0,la:"Abre",lb:"Volta",reps:15,rest:45},uni:true,trocaLado:5,num:"B3b",name:"Crucifixo inverso unilateral na polia",tag:"Deltoide posterior",type:"sets",
+       sets:[{c:"?",r:"12–15"},{c:"?",r:"12–15"},{c:"?",r:"12–15"}],
+       params:[["Séries","3 por lado"],["Reps","12–15"],["Execução","1s abre · 2s volta"],["Descanso","45s ao fim do par"]],
+       exec:"Mesma estação, polia na altura do ombro. Em pé de lado, braço cruzando o corpo, abre puxando para trás com o cotovelo quase estendido.",
+       obj:"Deltoide posterior e rotação externa — o contrapeso do dia de empurrar. Entrou no lugar do face pull.",
+       rest:"5seg entre lados · 45seg entre rodadas."}
+     ]},
+    {letter:"F", title:"Fechamento", time:"~6 min",
+     note:"Trapézio, carga assimétrica e adutor. Aqui pode ir à falha.",
+     items:[
+      Object.assign({},ENCOLHIMENTO,{num:"F1"}),
+      {id:"suitcase",tempo:{a:2,pa:0,b:2,pb:0,la:"Anda",lb:"Volta",reps:8,rest:30},uni:true,trocaLado:10,num:"F2",name:"Suitcase carry",tag:"Antiflexão lateral",type:"check",
+       params:[["Séries","1 por lado"],["Tempo","30seg/lado"],["Carga","Halter pesado"],["Execução","Passo controlado"]],
+       exec:"Um halter pesado de um lado só. Caminhe com os ombros NIVELADOS e as costelas fechadas, sem inclinar para o lado leve. Se o tronco tomba, o peso está alto demais.",
+       obj:"Antiflexão lateral — trabalha o quadrado lombar que você usa em cada passada de corrida.",
+       rest:"Troca de lado direto · 30seg antes do Copenhagen."},
+      Object.assign({},COPEN,{num:"F3"})
+     ]}
+  ]},
+
+  A:{ nome:"Treino A — Empurrar", eixo:"Peito · ombro · tríceps · core rotacional", tempo:"~35 min",
+    blocks:[
+    {letter:"P", title:"Preparo", time:"~3 min", note:"Circuito · 2 passadas.", items:PREP},
+    {letter:"1", title:"Par 1 — banco + step", time:"~7 min",
+     note:"Nenhuma máquina ocupada. Par no mesmo grupo: o segundo vem pré-fatigado de propósito.",
+     items:[
+      {id:"supino_incl",grupo:"A1",tempo:{a:2,pa:0,b:1,pb:0,la:"Desce",lb:"Sobe",reps:10,rest:0},num:"A1a",name:"Supino inclinado com halteres",tag:"Peito",type:"sets",
+       sets:[{c:"24kg",r:"8–10"},{c:"26kg",r:"8–10"},{c:"26kg",r:"8"}],
+       params:[["Séries","3"],["Execução","2s desce · sobe forte"],["Descanso","15s → A1b"],["RIR","2"]],
+       exec:"Banco a 30°. Desça em 2seg até o alongamento, suba com força. Sem pausa embaixo.",
+       obj:"Composto principal de peito. Halter porque não existe supino máquina na sua academia — e é melhor assim.",
+       rest:"15seg de transição · o pacer emenda no A1b.",
+       warn:"Carga de partida estimada em 24–26kg — CONFIRMAR na primeira sessão. Teto da academia é 32kg, então há espaço de progressão."},
+      {id:"flexao",grupo:"A1",tempo:{a:2,pa:1,b:1,pb:0,la:"Desce",lb:"Sobe forte",reps:15,rest:75},num:"A1b",name:"Flexão com pés elevados no step",tag:"Peito / Corporal",type:"sets",
+       sets:[{c:"corporal",r:"12–15"},{c:"corporal",r:"12–15"},{c:"corporal",r:"12–15"}],
+       params:[["Séries","3"],["Execução","2s desce · 1s embaixo · sobe forte"],["Descanso","75s ao fim do par"],["RIR","1 · última 0"]],
+       exec:"Pés no step, mãos na largura do peito, corpo em prancha. Desça em 2seg, pausa 1seg embaixo, suba forte.",
+       obj:"Peito pré-fatigado com peso corporal. Pode ir perto da falha.",
+       rest:"75seg após completar o par A1.",
+       warn:"Você faz 30 no chão, mas 30 reps está fora da faixa onde força acontece. O tempo lento e a pausa embaixo derrubam a falha para 12–15. Quando 3×15 ficar confortável, elástico nas costas."}
+     ]},
+    {letter:"2", title:"Par 2 — mesma polia", time:"~7 min",
+     note:"Peito e tríceps na mesma cadeia e na mesma estação. Zero deslocamento.",
+     items:[
+      {id:"cross",grupo:"A2",tempo:{a:1,pa:1,b:2,pb:0,la:"Fecha",lb:"Abre",reps:12,rest:0},num:"A2a",name:"Crossover",tag:"Peito",type:"sets",
+       sets:[{c:"?",r:"12"},{c:"?",r:"12"},{c:"?",r:"12"}],
+       params:[["Séries","3"],["Execução","1s fecha · 1s aperta · 2s abre"],["Descanso","15s → A2b"],["RPE","8"]],
+       exec:"Polias altas, uma passada à frente, cotovelo levemente fletido e FIXO. Fecha à frente do quadril, aperta 1seg, abre em 2seg.",
+       obj:"Peito em alongamento com tensão constante.",
+       rest:"15seg de transição · o pacer emenda no A2b."},
+      Object.assign({},TRI_CORDA,{grupo:"A2",num:"A2b",rest:"60seg após completar o par A2."})
+     ]},
+    {letter:"3", title:"Par 3 — halteres", time:"~7 min",
+     note:"Nenhuma estação ocupada. O unilateral traz o core embutido.",
+     items:[
+      {id:"desenv_uni",grupo:"A3",tempo:{a:2,pa:0,b:1,pb:0,la:"Desce",lb:"Sobe",reps:8,rest:0},uni:true,trocaLado:5,num:"A3a",name:"Desenvolvimento unilateral com halter, em pé",tag:"Ombro + antiflexão",type:"sets",
+       sets:[{c:"?",r:"8"},{c:"?",r:"8"},{c:"?",r:"8"}],
+       params:[["Séries","3 por lado"],["Execução","2s desce · sobe forte"],["Descanso","5s entre lados"],["RIR","2"]],
+       exec:"Um halter só, em pé, costelas fechadas. Suba até extensão completa sem inclinar o tronco para o lado leve.",
+       obj:"Segurar carga acima da cabeça de um lado só é antiflexão lateral pura. O core sai de graça.",
+       rest:"5seg entre lados · direto para A3b."},
+      {id:"elev_lat",grupo:"A3",tempo:{a:1,pa:0,b:2,pb:0,la:"Sobe",lb:"Desce",reps:12,rest:60},num:"A3b",name:"Elevação lateral",tag:"Deltoide médio",type:"sets",
+       sets:[{c:"?",r:"12"},{c:"?",r:"12"},{c:"?",r:"12"}],
+       params:[["Séries","3"],["Execução","1s sobe · 2s desce"],["Descanso","60s ao fim do par"],["RPE","9"]],
+       exec:"Halteres ao lado, sobe até a altura do ombro liderando pelo cotovelo, desce em 2seg. Sem balanço de tronco.",
+       obj:"Isolamento — pode ir à falha.",
+       rest:"60seg entre rodadas.",
+       warn:"Se os 35 min estourarem, este é o primeiro corte do treino A."}
+     ]},
+    {letter:"F", title:"Fechamento", time:"~6 min", note:"Rotação com carga e adutor.",
+     items:[ Object.assign({},LANDMINE,{num:"F1"}), Object.assign({},COPEN,{num:"F2"}) ]}
+  ]},
+
+  AB:{ nome:"Treino AB — Completo", eixo:"Superior inteiro · plano B da semana apertada", tempo:"~35 min",
+    blocks:[
+    {letter:"P", title:"Preparo", time:"~3 min", note:"Circuito · 2 passadas.", items:PREP},
+    {letter:"1", title:"Par 1 — antagonista puro", time:"~8 min",
+     note:"Empurrar e puxar alternados, ocupando ZERO máquinas. Enquanto o peito descansa, as costas trabalham.",
+     items:[
+      {id:"supino_incl",grupo:"AB1",tempo:{a:2,pa:0,b:1,pb:0,la:"Desce",lb:"Sobe",reps:10,rest:0},num:"AB1a",name:"Supino inclinado com halteres",tag:"Peito",type:"sets",
+       sets:[{c:"24kg",r:"8–10"},{c:"26kg",r:"8–10"},{c:"26kg",r:"8"}],
+       params:[["Séries","3"],["Execução","2s desce · sobe forte"],["Descanso","15s → AB1b"],["RIR","2"]],
+       exec:"Banco a 30°. Desça em 2seg, suba com força.",
+       obj:"Composto de peito.",
+       rest:"15seg de transição."},
+      {id:"barra_fixa",grupo:"AB1",tempo:{a:1,pa:1,b:2,pb:0,la:"Sobe",lb:"Desce",reps:8,rest:60},num:"AB1b",name:"Barra fixa",tag:"Dorsal",type:"sets",
+       sets:[{c:"corporal",r:"8"},{c:"corporal",r:"8"},{c:"corporal",r:"8"}],
+       params:[["Séries","3"],["Execução","1s sobe · 1s topo · 2s desce"],["Descanso","60s ao fim do par"],["RIR","2 · última 0–1"]],
+       exec:"Pegada pronada, pausa 1seg com o queixo acima da barra, desce em 2seg.",
+       obj:"Composto de puxar. Progressão é peso no cinto.",
+       rest:"60seg após completar o par AB1."}
+     ]},
+    {letter:"2", title:"Par 2 — halter + remada", time:"~8 min",
+     note:"Um peso livre e uma máquina. Antagonista.",
+     items:[
+      {id:"desenv_sent",grupo:"AB2",tempo:{a:2,pa:0,b:1,pb:0,la:"Desce",lb:"Sobe",reps:10,rest:0},num:"AB2a",name:"Desenvolvimento com halteres, sentado",tag:"Ombro",type:"sets",
+       sets:[{c:"?",r:"8–10"},{c:"?",r:"8–10"},{c:"?",r:"8–10"}],
+       params:[["Séries","3"],["Execução","2s desce · sobe forte"],["Descanso","15s → AB2b"],["RIR","2"]],
+       exec:"Banco com respaldo alto, costelas fechadas. Desça até o cotovelo pouco abaixo do ombro, suba forte.",
+       obj:"Composto de ombro.",
+       rest:"15seg de transição."},
+      Object.assign({},{},{id:"rem_peito",grupo:"AB2",tempo:{a:1,pa:1,b:2,pb:0,la:"Puxa",lb:"Volta",reps:10,rest:60},num:"AB2b",name:"Remada com apoio no peito",tag:"Dorsal",type:"sets",
+       sets:[{c:"?",r:"8–10"},{c:"?",r:"8–10"},{c:"?",r:"8–10"}],
+       params:[["Séries","3"],["Execução","1s puxa · 1s aperta · 2s volta"],["Descanso","60s ao fim do par"],["RIR","2"]],
+       exec:"Peito apoiado, cotovelo para trás, escápulas juntas. Pausa 1seg no aperto.",
+       obj:"Espessura de costas sem carregar o posterior.",
+       rest:"60seg após o par AB2."})
+     ]},
+    {letter:"3", title:"Par 3 — mesma polia", time:"~5 min",
+     note:"Só 2 rodadas. Bíceps e tríceps na mesma estação.",
+     items:[
+      {id:"rosca_polia",grupo:"AB3",tempo:{a:1,pa:0,b:2,pb:0,la:"Sobe",lb:"Desce",reps:10,rest:0},num:"AB3a",name:"Rosca na polia baixa",tag:"Bíceps",type:"sets",
+       sets:[{c:"?",r:"10"},{c:"?",r:"10"}],
+       params:[["Séries","2"],["Execução","1s sobe · 2s desce"],["Descanso","15s → AB3b"],["RPE","9"]],
+       exec:"Barra reta na polia baixa, cotovelo fixo ao lado do tronco.",
+       obj:"Isolamento — pode ir à falha.",
+       rest:"15seg de transição.",
+       warn:"2ª semana: rest-pause na última rodada."},
+      Object.assign({},TRI_CORDA,{grupo:"AB3",num:"AB3b",
+       sets:[{c:"?",r:"10–12"},{c:"?",r:"10–12"}],
+       params:[["Séries","2"],["Execução","1s estende · 2s volta"],["Descanso","60s ao fim do par"],["RPE","9"]],
+       rest:"60seg após o par AB3."})
+     ]},
+    {letter:"F", title:"Fechamento", time:"~6 min", note:"Trapézio, rotação e adutor.",
+     items:[ Object.assign({},ENCOLHIMENTO,{num:"F1"}), Object.assign({},LANDMINE,{num:"F2"}), Object.assign({},COPEN,{num:"F3"}) ]}
+  ]}
+};
+
+// ===================== ESTADO =====================
+let cur = localStorage.getItem("tm-cur") || "B";
+let BLOCKS = TREINOS[cur].blocks;
+let EX = {};
+function indexEX(){ EX={}; BLOCKS.forEach(b=>b.items.forEach(x=>EX[x.id]=x)); }
+indexEX();
+
+const LS_FIELDS="tm-fields-v1", LS_SESS="tm-sessions-v1";
 let fields = JSON.parse(localStorage.getItem(LS_FIELDS)||"{}");
 let sessions = JSON.parse(localStorage.getItem(LS_SESS)||"[]");
 const saveFields=()=>localStorage.setItem(LS_FIELDS,JSON.stringify(fields));
 const saveSessions=()=>localStorage.setItem(LS_SESS,JSON.stringify(sessions));
 const fmtDate=ts=>new Date(ts).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+// rascunho e histórico são separados por treino
+const fkey=id=>cur+"::"+id;
+function getF(id){ const k=fkey(id); if(!fields[k]) fields[k]={sets:[],obs:"",done:false}; if(!fields[k].sets) fields[k].sets=[]; return fields[k]; }
+const doTreino=s=>(s.treino||"B");
 
-function getF(id){ if(!fields[id]) fields[id]={sets:[],obs:"",done:false}; if(!fields[id].sets) fields[id].sets=[]; return fields[id]; }
-
-// última sessão que registrou o exercício
 function lastFor(id){
-  const s = [...sessions].sort((a,b)=>b.ts-a.ts).find(s=>{
+  const s=[...sessions].filter(x=>doTreino(x)===cur).sort((a,b)=>b.ts-a.ts).find(s=>{
     const d=s.snapshot[id]; if(!d) return false;
     return d.done || (d.sets||[]).some(x=>x&&(x.c||x.r));
   });
@@ -532,7 +699,7 @@ function renderBlocks(){
             <label class="chk${f.done?" on":""}" id="chk-${ex.id}">
               <input type="checkbox" ${f.done?"checked":""} id="cb-${ex.id}"> Feito
             </label>
-            <div class="obs-wrap"><label>Observações</label><textarea id="obs-${ex.id}" rows="1" placeholder="band usada, sensação...">${f.obs||""}</textarea></div>
+            <div class="obs-wrap"><label>Observações</label><textarea id="obs-${ex.id}" rows="1" placeholder="carga, sensação...">${f.obs||""}</textarea></div>
           </div>
           ${last?`<div class="last"><b>Última:</b> ${last}</div>`:""}
         </div>`;
@@ -550,7 +717,7 @@ function renderBlocks(){
           <div class="log-title">Registro de hoje · preencheu = fez a série</div>
           <div class="set-head"><span>#</span><span>Carga</span><span>Reps</span></div>
           <div class="sets">${rows}</div>
-          <div class="obs-wrap"><label>Observações do exercício</label><textarea id="obs-${ex.id}" rows="1" placeholder="dor, RPE, ajuste técnico...">${f.obs||""}</textarea></div>
+          <div class="obs-wrap"><label>Observações do exercício</label><textarea id="obs-${ex.id}" rows="1" placeholder="RPE, ajuste, carga que faltou...">${f.obs||""}</textarea></div>
           ${last?`<div class="last"><b>Última:</b> ${last}</div>`:""}
         </div>`;
       }
@@ -565,10 +732,8 @@ function renderBlocks(){
         </div>${logHtml}`;
       sec.appendChild(card);
 
-      // listeners
       if(ex.tempo) card.querySelector(`#pc-${ex.id}`).addEventListener("click",()=>Pacer.open(ex));
-      const obsEl=card.querySelector(`#obs-${ex.id}`);
-      obsEl.addEventListener("input",e=>{ getF(ex.id).obs=e.target.value; saveFields(); });
+      card.querySelector(`#obs-${ex.id}`).addEventListener("input",e=>{ getF(ex.id).obs=e.target.value; saveFields(); });
       if(ex.type==="check"){
         const cb=card.querySelector(`#cb-${ex.id}`);
         cb.addEventListener("change",e=>{
@@ -583,8 +748,7 @@ function renderBlocks(){
               f2.sets[i]=f2.sets[i]||{};
               f2.sets[i][k]=e.target.value;
               saveFields();
-              const row=card.querySelector(`#row-${ex.id}-${i}`);
-              row.classList.toggle("filled", !!(f2.sets[i].c||f2.sets[i].r));
+              card.querySelector(`#row-${ex.id}-${i}`).classList.toggle("filled", !!(f2.sets[i].c||f2.sets[i].r));
             });
           });
         });
@@ -594,6 +758,29 @@ function renderBlocks(){
   });
 }
 
+// ===================== SELETOR DE TREINO =====================
+function renderChips(){
+  const box=document.getElementById("chips"); box.innerHTML="";
+  ["A","B","AB"].forEach(k=>{
+    const b=document.createElement("button");
+    b.className=(k===cur?"on":"");
+    b.textContent=k==="AB"?"AB · completo":("Treino "+k+" · "+(k==="A"?"empurrar":"puxar"));
+    b.addEventListener("click",()=>{ trocaTreino(k); });
+    box.appendChild(b);
+  });
+  document.getElementById("tNome").textContent=TREINOS[cur].nome;
+  document.getElementById("tEixo").textContent=TREINOS[cur].eixo;
+  document.getElementById("tDur").innerHTML=TREINOS[cur].tempo+' <small>· teto rígido</small>';
+  const jaFez=sessions.some(s=>doTreino(s)===cur);
+  document.getElementById("firstrun").style.display=jaFez?"none":"block";
+}
+function trocaTreino(k){
+  cur=k; localStorage.setItem("tm-cur",k);
+  BLOCKS=TREINOS[k].blocks; indexEX();
+  renderChips(); renderBlocks(); renderHist();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 document.getElementById("cd").textContent=Math.max(0,Math.ceil((new Date("2026-12-06T00:00:00")-new Date())/864e5));
 
 // ===================== SESSÕES =====================
@@ -601,19 +788,18 @@ let editingId=null;
 const ovDone=document.getElementById("ovDone");
 document.getElementById("btnDone").addEventListener("click",()=>{
   editingId=null;
-  document.getElementById("doneTitle").textContent="Treino concluído";
+  document.getElementById("doneTitle").textContent="Treino "+cur+" concluído";
   document.getElementById("doneSub").textContent="Registra a sessão com o que foi preenchido nos exercícios.";
   document.getElementById("mDur").value=""; document.getElementById("mInt").value=""; document.getElementById("mObs").value="";
   ovDone.classList.add("open");
 });
 document.getElementById("mCancel").addEventListener("click",()=>ovDone.classList.remove("open"));
-
 document.getElementById("mSave").addEventListener("click",()=>{
   const dur=document.getElementById("mDur").value, inten=document.getElementById("mInt").value, obs=document.getElementById("mObs").value.trim();
   if(!dur||!inten){ alert("Preencha duração e intensidade."); return; }
   const snap={};
   Object.keys(EX).forEach(id=>{
-    const f=fields[id]; if(!f) return;
+    const f=fields[fkey(id)]; if(!f) return;
     const hasSets=(f.sets||[]).some(x=>x&&(x.c||x.r));
     if(f.done||hasSets||f.obs) snap[id]={sets:JSON.parse(JSON.stringify(f.sets||[])),obs:f.obs||"",done:!!f.done};
   });
@@ -621,24 +807,24 @@ document.getElementById("mSave").addEventListener("click",()=>{
     const s=sessions.find(x=>x.id===editingId);
     if(s){ s.dur=dur; s.int=inten; s.obs=obs; s.snapshot=snap; }
   } else {
-    sessions.unshift({id:Date.now().toString(36),ts:Date.now(),dur,int:inten,obs,snapshot:snap,pain:null});
-    // limpa o rascunho para a próxima sessão
-    fields={}; saveFields();
+    sessions.unshift({id:Date.now().toString(36),ts:Date.now(),treino:cur,dur,int:inten,obs,snapshot:snap});
+    Object.keys(EX).forEach(id=>{ delete fields[fkey(id)]; }); saveFields();
   }
-  saveSessions(); renderBlocks(); renderHist(); checkPain();
+  saveSessions(); renderBlocks(); renderHist();
   ovDone.classList.remove("open");
 });
 
 function renderHist(){
   const el=document.getElementById("histList");
-  if(!sessions.length){ el.innerHTML='<div class="hist-empty">Nenhuma sessão registrada ainda.</div>'; return; }
-  el.innerHTML=[...sessions].sort((a,b)=>b.ts-a.ts).map(s=>{
+  const ss=[...sessions].sort((a,b)=>b.ts-a.ts);
+  if(!ss.length){ el.innerHTML='<div class="hist-empty">Nenhuma sessão registrada ainda.</div>'; return; }
+  el.innerHTML=ss.map(s=>{
     const n=Object.keys(s.snapshot).length;
     return `<div class="hist-item">
       <div class="hist-row">
         <span class="hist-date">${fmtDate(s.ts)}</span>
+        <span class="hist-pain">${doTreino(s)}</span>
         <span class="hist-meta">${s.dur} · int. ${s.int.charAt(0)}/5 · ${n} exerc.</span>
-        ${s.pain!==null&&s.pain!==undefined?`<span class="hist-pain">dor 24h: ${s.pain}/10</span>`:""}
         <span class="hist-actions">
           <button onclick="editSession('${s.id}')">Editar</button>
           <button onclick="delSession('${s.id}')">Excluir</button>
@@ -650,33 +836,20 @@ function renderHist(){
 }
 window.editSession=function(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
+  if(doTreino(s)!==cur) trocaTreino(doTreino(s));
   editingId=id;
-  fields=JSON.parse(JSON.stringify(s.snapshot)); saveFields(); renderBlocks();
+  Object.keys(s.snapshot).forEach(k=>{ fields[fkey(k)]=JSON.parse(JSON.stringify(s.snapshot[k])); });
+  saveFields(); renderBlocks();
   document.getElementById("doneTitle").textContent="Editar sessão de "+fmtDate(s.ts);
-  document.getElementById("doneSub").textContent="Os campos foram recarregados com os dados desta sessão. Corrija na página, depois salve aqui.";
+  document.getElementById("doneSub").textContent="Os campos foram recarregados. Corrija na página, depois salve aqui.";
   document.getElementById("mDur").value=s.dur; document.getElementById("mInt").value=s.int; document.getElementById("mObs").value=s.obs||"";
   ovDone.classList.add("open");
   window.scrollTo({top:0,behavior:"smooth"});
 };
 window.delSession=function(id){
   if(!confirm("Excluir esta sessão?")) return;
-  sessions=sessions.filter(x=>x.id!==id); saveSessions(); renderBlocks(); renderHist(); checkPain();
+  sessions=sessions.filter(x=>x.id!==id); saveSessions(); renderBlocks(); renderHist();
 };
-
-// ===================== DOR 24H =====================
-function checkPain(){
-  const banner=document.getElementById("painBanner"), now=Date.now();
-  const p=[...sessions].sort((a,b)=>b.ts-a.ts).find(s=>(s.pain===null||s.pain===undefined)&&(now-s.ts)>=12*36e5&&(now-s.ts)<=72*36e5);
-  if(!p){ banner.classList.remove("show"); return; }
-  document.getElementById("painQ").textContent=`Como está o posterior desde o treino de ${fmtDate(p.ts)}? (0–10)`;
-  const sc=document.getElementById("painScale"); sc.innerHTML="";
-  for(let i=0;i<=10;i++){
-    const b=document.createElement("button"); b.textContent=i;
-    b.addEventListener("click",()=>{ p.pain=i; saveSessions(); renderHist(); checkPain(); });
-    sc.appendChild(b);
-  }
-  banner.classList.add("show");
-}
 
 // ===================== RELATÓRIO =====================
 const ovRep=document.getElementById("ovRep");
@@ -688,18 +861,14 @@ document.querySelectorAll(".rep-controls button").forEach(b=>b.addEventListener(
   b.classList.add("active"); repWeeks=+b.dataset.w; renderReport();
 }));
 function periodSessions(){
-  const all=[...sessions].sort((a,b)=>a.ts-b.ts);
+  let all=[...sessions].filter(s=>doTreino(s)===cur).sort((a,b)=>a.ts-b.ts);
   if(!repWeeks) return all;
   const cut=Date.now()-repWeeks*7*864e5;
   return all.filter(s=>s.ts>=cut);
 }
 const num=s=>{ const m=(s||"").replace(",",".").match(/(\d+(\.\d+)?)/); return m?parseFloat(m[1]):null; };
-function volume(sets){
-  return (sets||[]).reduce((t,x)=>{ const c=num(x&&x.c), r=num(x&&x.r); return t+((c&&r)?c*r:0); },0);
-}
-function setsTxt(sets){
-  return (sets||[]).filter(x=>x&&(x.c||x.r)).map(x=>`${x.c||"—"}×${x.r||"—"}`).join(" · ");
-}
+function volume(sets){ return (sets||[]).reduce((t,x)=>{ const c=num(x&&x.c), r=num(x&&x.r); return t+((c&&r)?c*r:0); },0); }
+function setsTxt(sets){ return (sets||[]).filter(x=>x&&(x.c||x.r)).map(x=>`${x.c||"—"}×${x.r||"—"}`).join(" · "); }
 function spark(v){
   if(v.length<2) return "";
   const w=170,h=26,mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1;
@@ -708,55 +877,49 @@ function spark(v){
 }
 function renderReport(){
   const ss=periodSessions(), body=document.getElementById("repBody");
-  if(!ss.length){ body.innerHTML='<div class="hist-empty">Nenhuma sessão no período.</div>'; return; }
+  document.getElementById("repSub").textContent="Treino "+cur+" · sessões registradas neste dispositivo.";
+  if(!ss.length){ body.innerHTML='<div class="hist-empty">Nenhuma sessão do treino '+cur+' no período.</div>'; return; }
   const weeks=repWeeks||Math.max(1,Math.ceil((Date.now()-ss[0].ts)/(7*864e5)));
   const ints=ss.map(s=>+s.int.charAt(0));
-  const pains=ss.filter(s=>s.pain!==null&&s.pain!==undefined).map(s=>s.pain);
-  let h=`<div class="rep-sec"><div class="rep-h">Visão geral</div><div class="rep-kpis">
+  let h=`<div class="rep-sec"><div class="rep-h">Visão geral · treino ${cur}</div><div class="rep-kpis">
     <div class="rep-kpi"><div class="k">Sessões</div><div class="v">${ss.length}</div></div>
     <div class="rep-kpi"><div class="k">Média/semana</div><div class="v">${(ss.length/weeks).toFixed(1)}</div></div>
     <div class="rep-kpi"><div class="k">Intensidade média</div><div class="v">${(ints.reduce((a,b)=>a+b,0)/ints.length).toFixed(1)}/5</div></div>
-    <div class="rep-kpi"><div class="k">Dor 24h média</div><div class="v">${pains.length?(pains.reduce((a,b)=>a+b,0)/pains.length).toFixed(1)+"/10":"—"}</div></div>
   </div></div><div class="rep-sec"><div class="rep-h">Evolução por exercício</div>`;
   Object.keys(EX).forEach(id=>{
     const ex=EX[id];
     const rows=ss.filter(s=>s.snapshot[id]).map(s=>({ts:s.ts,...s.snapshot[id]}));
     if(!rows.length) return;
     if(ex.type==="check"){
-      const done=rows.filter(r=>r.done).length;
       h+=`<div class="rep-ex"><div class="rep-ex-name">${ex.num} · ${ex.name}</div>
-        <div class="rep-ex-data">Executado em ${done} de ${ss.length} sessões</div></div>`;
+        <div class="rep-ex-data">Executado em ${rows.filter(r=>r.done).length} de ${ss.length} sessões</div></div>`;
     } else {
       const vols=rows.map(r=>volume(r.sets)).filter(v=>v>0);
       const done=rows.map(r=>(r.sets||[]).filter(x=>x&&(x.c||x.r)).length);
-      const prescr=ex.sets.length;
       h+=`<div class="rep-ex"><div class="rep-ex-name">${ex.num} · ${ex.name}</div>
-        <div class="rep-ex-data">${rows.map((r,i)=>`${fmtDate(r.ts)}: ${setsTxt(r.sets)||"não realizado"} <span style="color:#8A93A5">(${done[i]}/${prescr} séries${vols.length?", vol "+Math.round(volume(r.sets))+"kg":""})</span>`).join("<br>")}</div>
+        <div class="rep-ex-data">${rows.map((r,i)=>`${fmtDate(r.ts)}: ${setsTxt(r.sets)||"não realizado"} <span style="color:#8A93A5">(${done[i]}/${ex.sets.length} séries${volume(r.sets)?", vol "+Math.round(volume(r.sets))+"kg":""})</span>`).join("<br>")}</div>
         ${vols.length>=2?spark(vols):""}</div>`;
     }
   });
-  h+=`</div><div class="rep-sec"><div class="rep-h">Sessões e dor</div><div class="rep-ex-data">${
-    ss.map(s=>`${fmtDate(s.ts)}: ${s.dur}, int ${s.int.charAt(0)}/5${(s.pain!==null&&s.pain!==undefined)?", dor24h "+s.pain+"/10":""}${s.obs?" — "+s.obs:""}`).join("<br>")
+  h+=`</div><div class="rep-sec"><div class="rep-h">Sessões</div><div class="rep-ex-data">${
+    ss.map(s=>`${fmtDate(s.ts)}: ${s.dur}, int ${s.int.charAt(0)}/5${s.obs?" — "+s.obs:""}`).join("<br>")
   }</div></div>`;
   body.innerHTML=h;
 }
 document.getElementById("repCopy").addEventListener("click",()=>{
   const ss=periodSessions();
-  let t=`RELATÓRIO DE TREINO — Rodrigo · pernas (reabilitação semimembranoso + força CIM 06/12/2026)\nPeríodo: ${repWeeks?repWeeks+" semanas":"histórico completo"} · ${ss.length} sessões\n\n`;
+  let t=`RELATÓRIO — Rodrigo · superiores ${cur} (${TREINOS[cur].eixo})\nCiclo CIM 06/12/2026 · Período: ${repWeeks?repWeeks+" semanas":"histórico completo"} · ${ss.length} sessões\n\n`;
   ss.forEach(s=>{
-    t+=`[${fmtDate(s.ts)}] ${s.dur} · intensidade ${s.int.charAt(0)}/5${(s.pain!==null&&s.pain!==undefined)?` · dor 24h ${s.pain}/10`:""}${s.obs?` · ${s.obs}`:""}\n`;
+    t+=`[${fmtDate(s.ts)}] ${s.dur} · intensidade ${s.int.charAt(0)}/5${s.obs?` · ${s.obs}`:""}\n`;
     Object.keys(EX).forEach(id=>{
       const d=s.snapshot[id]; if(!d) return;
       const ex=EX[id];
-      if(ex.type==="check"){ t+=`  - ${ex.num} ${ex.name}: ${d.done?"feito":"não feito"}${d.obs?" · "+d.obs:""}\n`; }
-      else{
-        const txt=setsTxt(d.sets);
-        t+=`  - ${ex.num} ${ex.name}: ${txt||"não realizado"} [${(d.sets||[]).filter(x=>x&&(x.c||x.r)).length}/${ex.sets.length} séries${volume(d.sets)?", vol "+Math.round(volume(d.sets))+"kg":""}]${d.obs?" · "+d.obs:""}\n`;
-      }
+      if(ex.type==="check") t+=`  - ${ex.num} ${ex.name}: ${d.done?"feito":"não feito"}${d.obs?" · "+d.obs:""}\n`;
+      else t+=`  - ${ex.num} ${ex.name}: ${setsTxt(d.sets)||"não realizado"} [${(d.sets||[]).filter(x=>x&&(x.c||x.r)).length}/${ex.sets.length} séries]${d.obs?" · "+d.obs:""}\n`;
     });
     t+="\n";
   });
-  t+="Prescrição atual (rev. 03/09): A ativação enxuta (3 exerc., 2 passadas) · B1 RDL uni 20/25/30/30×12/10/8/8 (3-1-2) · B2 leg curl uni 3×8-10 5kg (3-1-3) · B3 hip thrust bilateral 3×10-12 · C1 agacho Smith (2s desce, sobe forte, 1s topo) + panturrilha Smith · C2 extensora uni 3×8 20kg (2s sobe, 3s desce, SEM pausa no topo) + panturrilha uni no chão 3×12-15. Adutora/prancha lateral saíram; adutor virou Copenhagen nos dias de superiores.\n";
+  t+=`Regras: falha só nos isolamentos e no peso corporal · compostos em RIR 2 · nenhum par ocupa duas máquinas · 35 min de teto rígido.\n`;
   navigator.clipboard.writeText(t).then(()=>{
     const f=document.getElementById("copiedFlag");
     f.classList.add("show"); setTimeout(()=>f.classList.remove("show"),1800);
@@ -765,10 +928,10 @@ document.getElementById("repCopy").addEventListener("click",()=>{
 
 // ===================== BACKUP / IMPORT =====================
 document.getElementById("btnBackup").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify({v:3,fields,sessions,exported:new Date().toISOString()},null,1)],{type:"application/json"});
+  const blob=new Blob([JSON.stringify({v:1,app:"mmss",fields,sessions,exported:new Date().toISOString()},null,1)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`treino-rodrigo-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.download=`treino-mmss-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
 });
 document.getElementById("btnImport").addEventListener("click",()=>document.getElementById("fileImport").click());
@@ -785,14 +948,13 @@ document.getElementById("fileImport").addEventListener("change",e=>{
         const ids=new Set(sessions.map(s=>s.id));
         d.sessions.forEach(s=>{ if(!ids.has(s.id)) sessions.push(s); });
       }
-      saveSessions(); saveFields(); renderBlocks(); renderHist(); checkPain();
-      alert("Importado: "+d.sessions.length+" sessão(ões) no arquivo.");
+      saveSessions(); saveFields(); renderBlocks(); renderHist();
+      alert("Importado: "+d.sessions.length+" sessão(ões).");
     }catch(err){ alert("Arquivo inválido: "+err.message); }
     e.target.value="";
   };
   rd.readAsText(file);
 });
-
 // ===================== ÁUDIO EMBUTIDO =====================
 // Elemento <audio> com WAV embutido: no iPhone ele sobe para a categoria de
 // playback e IGNORA o interruptor de silencioso, ao contrário do WebAudio.
@@ -1273,7 +1435,7 @@ const Pacer = (function(){
   return {open};
 })();
 
-renderBlocks(); renderHist(); checkPain();
+renderChips(); renderBlocks(); renderHist();
 </script>
 </body>
 </html>
