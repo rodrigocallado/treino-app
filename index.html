@@ -20,11 +20,12 @@
 body{font-family:'IBM Plex Sans',sans-serif;background:#fff;color:var(--ink);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 .eyebrow{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);text-align:center}
 h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,7vw,44px);letter-spacing:-.02em;text-transform:uppercase;text-align:center;margin:6px 0 36px;line-height:1.05}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%;max-width:640px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;width:100%;max-width:760px}
 a.card{display:block;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:26px 24px;background:#fff;transition:transform .1s ease,border-color .15s;position:relative;overflow:hidden}
 a.card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--c)}
 a.card:hover,a.card:focus-visible{transform:translateY(-2px);border-color:var(--c);outline:none}
-.card .who{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:-.01em}
+.card .own{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin-bottom:3px}
+.card .who{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:-.01em;line-height:1.05}
 .card .what{font-size:13.5px;color:var(--steel);margin-top:6px;line-height:1.45}
 .card .go{font-family:'Archivo Narrow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--c);margin-top:16px;display:inline-block}
 .card.r{--c:var(--accent)}
@@ -37,21 +38,25 @@ footer{margin-top:40px;font-size:12px;color:var(--steel);text-align:center}
   <h1>Quem vai treinar?</h1>
   <div class="cards">
     <a class="card r" href="/rodrigo/">
-      <div class="who">Rodrigo</div>
-      <div class="what">Pernas · reabilitação semimembranoso + força · rumo ao CIM 06/12</div>
+      <div class="own">Rodrigo</div>
+      <div class="who">Inferiores</div>
+      <div class="what">Reabilitação do semimembranoso + força · protocolo HSR · rumo ao CIM 06/12</div>
       <span class="go">Abrir treino →</span>
     </a>
     <a class="card r" href="/rodrigo/superiores.html">
+      <div class="own">Rodrigo</div>
       <div class="who">Superiores</div>
-      <div class="what">Treinos A, B e AB · 35 min · core rotacional + Copenhagen</div>
+      <div class="what">Treinos A, B e AB · 35 min · super-séries + core rotacional</div>
       <span class="go">Abrir treino →</span>
     </a>
     <a class="card l" href="/luiza/">
-      <div class="who">Luiza</div>
-      <div class="what">Treino de força personalizado</div>
+      <div class="own">Luiza</div>
+      <div class="who">Força &amp; Cardio</div>
+      <div class="what">Força A e B · bike intervalado e contínuo · natação</div>
       <span class="go">Abrir treino →</span>
     </a>
   </div>
+
   <footer>Dica: abra a sua página e use "Adicionar à Tela de Início" para criar o atalho direto.</footer>
 </body>
 </html>
